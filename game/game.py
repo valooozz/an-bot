@@ -1,14 +1,15 @@
-from typing import List
+from game_types.game_types import Sticks, Move
 
-def display_sticks(sticks: List[bool]) -> None:
+def display_sticks(sticks: Sticks) -> None:
     stick_line = ''.join('|  ' if stick else '   ' for stick in sticks)
     number_line = ''.join(f"{str(i+1):<3}" if stick else '   ' for i, stick in enumerate(sticks))
     print(f"\n{stick_line}\n{number_line}")
 
-def is_game_over(sticks: List[bool]) -> bool:
+def is_game_over(sticks: Sticks) -> bool:
     return sticks.count(True) == 0
 
-def is_valid_move(sticks: List[bool], start: int, count: int) -> bool:
+def is_valid_move(sticks: Sticks, move: Move) -> bool:
+    start, count = move
     if count not in [1, 2, 3]:
         print("You can only take 1, 2, or 3 sticks.")
         return False
@@ -20,6 +21,7 @@ def is_valid_move(sticks: List[bool], start: int, count: int) -> bool:
         return False
     return True
 
-def remove_sticks(sticks: List[bool], start: int, count: int) -> None:
+def remove_sticks(sticks: Sticks, move: Move) -> None:
+    start, count = move
     for i in range(start, start+count):
         sticks[i] = False

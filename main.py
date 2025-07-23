@@ -1,11 +1,11 @@
-from typing import List
-from game import display_sticks, is_game_over
-from anbot import anbot_move  
-from player import player_move
+from game.game import display_sticks, is_game_over
+from anbot.anbot import anbot_move  
+from player.player import player_move
+from game_types.game_types import Sticks
 
 def main() -> None:
     print("\nWelcome to Sixteen Sticks! You are playing against an-bot. Don't take the last stick!")
-    sticks: List[bool] = [True] * 16
+    sticks: Sticks = [True] * 16
     player_turn: bool = True  # True = human, False = an-bot
     while True:
         display_sticks(sticks)
