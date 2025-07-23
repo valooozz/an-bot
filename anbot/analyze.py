@@ -25,3 +25,6 @@ def is_parity_state(groups: Groups) -> bool:
         elif group != 1:
             return False
     return count_big == 1
+
+def is_parity_even(groups: Groups) -> bool:
+    return len(groups) % 2 == 0

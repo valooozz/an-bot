@@ -1,4 +1,4 @@
-from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
 from anbot.think import get_start_of_group
 
 def test_analyze_sticks():
@@ -129,3 +129,13 @@ def test_get_start_of_group():
     # One big group
     sticks = [True, True, True]
     assert get_start_of_group(sticks, 0) == 0
+
+def test_is_parity_even():
+    # Even number of groups: should return True
+    assert is_parity_even([2, 1]) == True
+    assert is_parity_even([1, 2, 1, 1]) == True
+
+    # Odd number of groups: should return False
+    assert is_parity_even([4]) == False
+    assert is_parity_even([2, 1, 1]) == False
+    assert is_parity_even([1, 3, 1]) == False
