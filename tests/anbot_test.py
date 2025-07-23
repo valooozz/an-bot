@@ -1,4 +1,4 @@
-from anbot.anbot import analyze_sticks, only_singles_left
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -37,18 +37,58 @@ def test_analyze_sticks():
 
 def test_only_singles_left():
     # Only single group of 1
-    assert only_singles_left([1]) == True
+    assert is_only_singles_left([1]) == True
 
     # Multiple groups of 1
-    assert only_singles_left([1, 1, 1]) == True
+    assert is_only_singles_left([1, 1, 1]) == True
 
     # Group with more than 1
-    assert only_singles_left([2]) == False
-    assert only_singles_left([1, 2]) == False
-    assert only_singles_left([2, 1]) == False
+    assert is_only_singles_left([2]) == False
+    assert is_only_singles_left([1, 2]) == False
+    assert is_only_singles_left([2, 1]) == False
 
     # Empty list (no groups)
-    assert only_singles_left([]) == True
+    assert is_only_singles_left([]) == True
 
     # Mixed groups
-    assert only_singles_left([1, 3, 1]) == False
+    assert is_only_singles_left([1, 3, 1]) == False
+
+def test_is_parity_state():
+    # Only singles: not a parity state
+    assert is_parity_state([1, 1, 1]) == False
+
+    # One group of 2, rest singles: parity state
+    assert is_parity_state([1, 2, 1]) == True
+    assert is_parity_state([2, 1, 1]) == True
+    assert is_parity_state([1, 1, 2]) == True
+
+    # One group of 3, rest singles: parity state
+    assert is_parity_state([1, 3, 1]) == True
+    assert is_parity_state([3, 1, 1]) == True
+    assert is_parity_state([1, 1, 3]) == True
+
+    # One group of 4, rest singles: parity state
+    assert is_parity_state([1, 4, 1]) == True
+    assert is_parity_state([4, 1, 1]) == True
+    assert is_parity_state([1, 1, 4]) == True
+
+    # Two groups of 2: not a parity state
+    assert is_parity_state([2, 2]) == False
+
+    # One group of 5: not a parity state
+    assert is_parity_state([5]) == False
+
+    # Group of 2 and group of 3: not a parity state
+    assert is_parity_state([2, 3]) == False
+
+    # Empty list: not a parity state (no groups)
+    assert is_parity_state([]) == False
+
+    # One group of 2: parity state
+    assert is_parity_state([2]) == True
+
+    # One group of 3: parity state
+    assert is_parity_state([3]) == True
+
+    # One group of 4: parity state
+    assert is_parity_state([4]) == True

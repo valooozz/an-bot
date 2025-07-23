@@ -27,20 +27,3 @@ def anbot_move(sticks: Sticks) -> None:
     print(f"\nAn-bot takes {count} stick{count > 1 and 's' or ''} starting at position {start+1}.")
     for i in range(start, start+count):
         sticks[i] = False
-
-def analyze_sticks(sticks: Sticks) -> Groups:
-    groups: Groups = []
-    count = 0
-    for stick in sticks:
-        if stick:
-            count += 1
-        else:
-            if count > 0:
-                groups.append(count)
-                count = 0
-    if count > 0:
-        groups.append(count)
-    return groups
-
-def only_singles_left(groups: Groups) -> bool:
-    return all(group == 1 for group in groups)
