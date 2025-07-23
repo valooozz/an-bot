@@ -1,4 +1,5 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state
+from anbot.think import get_start_of_group
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -92,3 +93,39 @@ def test_is_parity_state():
 
     # One group of 4: parity state
     assert is_parity_state([4]) == True
+
+def test_get_start_of_group():
+    sticks = [True, True, False, True, False, True, True, True]
+    # Groups: [2, 1, 3]
+    assert get_start_of_group(sticks, 0) == 0  # First group starts at 0
+    assert get_start_of_group(sticks, 1) == 3  # Second group starts at 3
+    assert get_start_of_group(sticks, 2) == 5  # Third group starts at 5
+
+    # Single group at start
+    sticks = [True, False, False, False]
+    assert get_start_of_group(sticks, 0) == 0
+
+    # Single group at end
+    sticks = [False, False, True]
+    assert get_start_of_group(sticks, 0) == 2
+
+    # All sticks taken (no groups) - should raise
+    sticks = [False, False, False]
+    try:
+        get_start_of_group(sticks, 0)
+        assert False, "Expected ValueError for no groups"
+    except ValueError:
+        pass
+
+    # Index out of range - should raise
+    sticks = [True, True, False, True]
+    # Only two groups, so index 2 is out of range
+    try:
+        get_start_of_group(sticks, 2)
+        assert False, "Expected ValueError for group index out of range"
+    except ValueError:
+        pass
+
+    # One big group
+    sticks = [True, True, True]
+    assert get_start_of_group(sticks, 0) == 0
