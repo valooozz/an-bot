@@ -1,5 +1,5 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
-from anbot.think import get_start_of_group
+from anbot.think import get_start_of_group, get_group_in_parity_state
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -139,3 +139,21 @@ def test_is_parity_even():
     assert is_parity_even([4]) == False
     assert is_parity_even([2, 1, 1]) == False
     assert is_parity_even([1, 3, 1]) == False
+
+def test_get_group_in_parity_state():
+    # Only one group, not 1
+    assert get_group_in_parity_state([4]) == (0, 4)
+    assert get_group_in_parity_state([2]) == (0, 2)
+    assert get_group_in_parity_state([3]) == (0, 3)
+
+    # First group is not 1
+    assert get_group_in_parity_state([2, 1, 1]) == (0, 2)
+    assert get_group_in_parity_state([3, 1, 1]) == (0, 3)
+
+    # Second group is not 1
+    assert get_group_in_parity_state([1, 2, 1]) == (1, 2)
+    assert get_group_in_parity_state([1, 3, 1]) == (1, 3)
+
+    # Third group is not 1
+    assert get_group_in_parity_state([1, 1, 2]) == (2, 2)
+    assert get_group_in_parity_state([1, 1, 3]) == (2, 3)
