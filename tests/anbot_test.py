@@ -1,6 +1,6 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
 from anbot.think import get_start_of_group, get_group_in_parity_state
-from anbot.do import take_whole_group
+from anbot.do import split_group_into_two_singles, take_whole_group
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -197,4 +197,42 @@ def test_take_whole_group():
     except IndexError:
         pass
     except Exception:
+        pass
+
+def test_split_into_two_singles():
+    # Test splitting a group of 3 into two singles
+    sticks = [True, True, True]
+    split_group_into_two_singles((0, 3), sticks)
+    assert sticks == [True, False, True]
+
+    # Test splitting a group of 4 into two singles
+    sticks = [True, True, True, True]
+    split_group_into_two_singles((0, 4), sticks)
+    assert sticks == [True, False, False, True]
+
+    # Test splitting a group of 5 into two singles
+    sticks = [True, True, True, True, True]
+    split_group_into_two_singles((0, 5), sticks)
+    assert sticks == [True, False, False, False, True]
+
+    # Test splitting the second group in a list
+    sticks = [True, False, True, True, True, False, True]
+    # Groups: [1, 3, 1]
+    split_group_into_two_singles((1, 3), sticks)
+    assert sticks == [True, False, True, False, True, False, True]
+
+    # Test ValueError for invalid group length (2)
+    sticks = [True, True]
+    try:
+        split_group_into_two_singles((0, 2), sticks)
+        assert False, "Expected ValueError for group length 2"
+    except ValueError:
+        pass
+
+    # Test ValueError for invalid group length (6)
+    sticks = [True, True, True, True, True, True]
+    try:
+        split_group_into_two_singles((0, 6), sticks)
+        assert False, "Expected ValueError for group length 6"
+    except ValueError:
         pass
