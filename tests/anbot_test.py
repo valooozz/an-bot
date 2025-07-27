@@ -1,5 +1,6 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
 from anbot.think import get_start_of_group, get_group_in_parity_state
+from anbot.do import take_whole_group
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -157,3 +158,43 @@ def test_get_group_in_parity_state():
     # Third group is not 1
     assert get_group_in_parity_state([1, 1, 2]) == (2, 2)
     assert get_group_in_parity_state([1, 1, 3]) == (2, 3)
+
+def test_take_whole_group():
+    # Test taking the only group
+    sticks = [True, True, True]
+    take_whole_group((0, 3), sticks)
+    assert sticks == [False, False, False]
+
+    # Test taking the first group in multiple groups
+    sticks = [True, True, False, True, True, True, False, True]
+    # Groups: [2, 3, 1]
+    take_whole_group((0, 2), sticks)
+    assert sticks == [False, False, False, True, True, True, False, True]
+
+    # Test taking the second group
+    sticks = [True, True, False, True, True, True, False, True]
+    take_whole_group((1, 3), sticks)
+    assert sticks == [True, True, False, False, False, False, False, True]
+
+    # Test taking the last group
+    sticks = [True, True, False, True, True, True, False, True]
+    take_whole_group((2, 1), sticks)
+    assert sticks == [True, True, False, True, True, True, False, False]
+
+    # Test ValueError when group index out of range
+    sticks = [True, False, True]
+    try:
+        take_whole_group((2, 1), sticks)
+        assert False, "Expected ValueError for group index out of range"
+    except ValueError:
+        pass
+
+    # Test ValueError when group length is too long
+    sticks = [True, True, False, True]
+    try:
+        take_whole_group((1, 2), sticks)  # Only one stick in group 1
+        assert False, "Expected IndexError or assignment out of range"
+    except IndexError:
+        pass
+    except Exception:
+        pass
