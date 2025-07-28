@@ -19,3 +19,10 @@ def leave_one_single_from_group(group_position: GroupPosition, sticks: Sticks) -
         raise ValueError("Can only leave one single from groups of length 2, 3, or 4")
     group_start = get_start_of_group(sticks, group_index)
     return (group_start, group_length - 1)
+
+def split_group_into_one_single_and_one_group(group_position: GroupPosition, sticks: Sticks) -> Move:
+    group_index, group_length = group_position
+    if group_length not in (4, 5, 6, 7):
+        raise ValueError("Can only leave one single from groups of length 4, 5, 6, or 7")
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start + 1, min(group_length - 3, 3))

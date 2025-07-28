@@ -1,6 +1,6 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
 from anbot.think import get_start_of_group, get_group_in_parity_state
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -253,5 +253,48 @@ def test_leave_one_single_from_group():
     try:
         leave_one_single_from_group((0, 5), sticks)
         assert False, "Expected ValueError for group length 5"
+    except ValueError:
+        pass
+
+def test_split_group_into_one_single_and_one_group():
+    # Test splitting a group of 4
+    sticks = [True, True, True, True]
+    move = split_group_into_one_single_and_one_group((0, 4), sticks)
+    assert move == (1, 1)
+
+    # Test splitting a group of 5
+    sticks = [True, True, True, True, True]
+    move = split_group_into_one_single_and_one_group((0, 5), sticks)
+    assert move == (1, 2)
+
+    # Test splitting a group of 6
+    sticks = [True, True, True, True, True, True]
+    move = split_group_into_one_single_and_one_group((0, 6), sticks)
+    assert move == (1, 3)
+
+    # Test splitting a group of 7
+    sticks = [True, True, True, True, True, True, True]
+    move = split_group_into_one_single_and_one_group((0, 7), sticks)
+    assert move == (1, 3)
+
+    # Test splitting the second group in a list
+    sticks = [True, False, True, True, True, True, False, True]
+    # Groups: [1, 4, 1]
+    move = split_group_into_one_single_and_one_group((1, 4), sticks)
+    assert move == (3, 1)
+
+    # Test ValueError for invalid group length (3)
+    sticks = [True, True, True]
+    try:
+        split_group_into_one_single_and_one_group((0, 3), sticks)
+        assert False, "Expected ValueError for group length 3"
+    except ValueError:
+        pass
+
+    # Test ValueError for invalid group length (8)
+    sticks = [True] * 8
+    try:
+        split_group_into_one_single_and_one_group((0, 8), sticks)
+        assert False, "Expected ValueError for group length 8"
     except ValueError:
         pass
