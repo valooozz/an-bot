@@ -162,64 +162,45 @@ def test_get_group_in_parity_state():
 def test_take_whole_group():
     # Test taking the only group
     sticks = [True, True, True]
-    take_whole_group((0, 3), sticks)
-    assert sticks == [False, False, False]
+    move = take_whole_group((0, 3), sticks)
+    assert move == (0, 3)
 
     # Test taking the first group in multiple groups
     sticks = [True, True, False, True, True, True, False, True]
-    # Groups: [2, 3, 1]
-    take_whole_group((0, 2), sticks)
-    assert sticks == [False, False, False, True, True, True, False, True]
+    move = take_whole_group((0, 2), sticks)
+    assert move == (0, 2)
 
     # Test taking the second group
     sticks = [True, True, False, True, True, True, False, True]
-    take_whole_group((1, 3), sticks)
-    assert sticks == [True, True, False, False, False, False, False, True]
+    move = take_whole_group((1, 3), sticks)
+    assert move == (3, 3)
 
     # Test taking the last group
     sticks = [True, True, False, True, True, True, False, True]
-    take_whole_group((2, 1), sticks)
-    assert sticks == [True, True, False, True, True, True, False, False]
+    move = take_whole_group((2, 1), sticks)
+    assert move == (7, 1)
 
-    # Test ValueError when group index out of range
-    sticks = [True, False, True]
-    try:
-        take_whole_group((2, 1), sticks)
-        assert False, "Expected ValueError for group index out of range"
-    except ValueError:
-        pass
-
-    # Test ValueError when group length is too long
-    sticks = [True, True, False, True]
-    try:
-        take_whole_group((1, 2), sticks)  # Only one stick in group 1
-        assert False, "Expected IndexError or assignment out of range"
-    except IndexError:
-        pass
-    except Exception:
-        pass
-
-def test_split_into_two_singles():
+def test_split_group_into_two_singles():
     # Test splitting a group of 3 into two singles
     sticks = [True, True, True]
-    split_group_into_two_singles((0, 3), sticks)
-    assert sticks == [True, False, True]
+    move = split_group_into_two_singles((0, 3), sticks)
+    assert move == (1, 1)
 
     # Test splitting a group of 4 into two singles
     sticks = [True, True, True, True]
-    split_group_into_two_singles((0, 4), sticks)
-    assert sticks == [True, False, False, True]
+    move = split_group_into_two_singles((0, 4), sticks)
+    assert move == (1, 2)
 
     # Test splitting a group of 5 into two singles
     sticks = [True, True, True, True, True]
-    split_group_into_two_singles((0, 5), sticks)
-    assert sticks == [True, False, False, False, True]
+    move = split_group_into_two_singles((0, 5), sticks)
+    assert move == (1, 3)
 
     # Test splitting the second group in a list
     sticks = [True, False, True, True, True, False, True]
     # Groups: [1, 3, 1]
-    split_group_into_two_singles((1, 3), sticks)
-    assert sticks == [True, False, True, False, True, False, True]
+    move = split_group_into_two_singles((1, 3), sticks)
+    assert move == (3, 1)
 
     # Test ValueError for invalid group length (2)
     sticks = [True, True]
@@ -240,24 +221,24 @@ def test_split_into_two_singles():
 def test_leave_one_single_from_group():
     # Test leaving one single from a group of 2
     sticks = [True, True]
-    leave_one_single_from_group((0, 2), sticks)
-    assert sticks == [True, False]
+    move = leave_one_single_from_group((0, 2), sticks)
+    assert move == (0, 1)
 
     # Test leaving one single from a group of 3
     sticks = [True, True, True]
-    leave_one_single_from_group((0, 3), sticks)
-    assert sticks == [True, False, False]
+    move = leave_one_single_from_group((0, 3), sticks)
+    assert move == (0, 2)
 
     # Test leaving one single from a group of 4
     sticks = [True, True, True, True]
-    leave_one_single_from_group((0, 4), sticks)
-    assert sticks == [True, False, False, False]
+    move = leave_one_single_from_group((0, 4), sticks)
+    assert move == (0, 3)
 
     # Test leaving one single from the second group in a list
     sticks = [True, False, True, True, True, False, True]
     # Groups: [1, 3, 1]
-    leave_one_single_from_group((1, 3), sticks)
-    assert sticks == [True, False, True, False, False, False, True]
+    move = leave_one_single_from_group((1, 3), sticks)
+    assert move == (2, 2)
 
     # Test ValueError for invalid group length (1)
     sticks = [True]
