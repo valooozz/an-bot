@@ -51,6 +51,7 @@ def apply_move(sticks: Sticks, move: Move):
 
 def anbot_move(sticks: Sticks) -> None:
     groups = analyze_sticks(sticks)
+    move: Move | None = None
 
     if is_parity_state(groups):
         move = handle_parity(sticks, groups)
@@ -64,4 +65,4 @@ def anbot_move(sticks: Sticks) -> None:
     # Simple AI: random valid move
     moves: List[Move] = get_valid_moves(sticks)
     move: Move = random.choice(moves)
-    apply_move(move)
+    apply_move(sticks, move)
