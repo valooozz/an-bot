@@ -1,6 +1,6 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
 from anbot.think import get_start_of_group, get_group_in_parity_state
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -296,5 +296,48 @@ def test_split_group_into_one_single_and_one_group():
     try:
         split_group_into_one_single_and_one_group((0, 8), sticks)
         assert False, "Expected ValueError for group length 8"
+    except ValueError:
+        pass
+
+def test_split_group_into_two_identical_groups():
+    # Test splitting a group of 5
+    sticks = [True] * 5
+    move = split_group_into_two_identical_groups((0, 5), sticks)
+    assert move == (2, 1)
+
+    # Test splitting a group of 6
+    sticks = [True] * 6
+    move = split_group_into_two_identical_groups((0, 6), sticks)
+    assert move == (2, 2)
+
+    # Test splitting a group of 7
+    sticks = [True] * 7
+    move = split_group_into_two_identical_groups((0, 7), sticks)
+    assert move == (3, 1)
+
+    # Test splitting a group of 8
+    sticks = [True] * 8
+    move = split_group_into_two_identical_groups((0, 8), sticks)
+    assert move == (3, 2)
+
+    # Test splitting the third group in a list
+    sticks = [True, False, True, True, True, True, False, True, True, True, True, True]
+    # Groups: [1, 4, 5]
+    move = split_group_into_two_identical_groups((2, 5), sticks)
+    assert move == (9, 1)
+
+    # Test ValueError for invalid group length (4)
+    sticks = [True] * 4
+    try:
+        split_group_into_two_identical_groups((0, 4), sticks)
+        assert False, "Expected ValueError for group length 4"
+    except ValueError:
+        pass
+
+    # Test ValueError for invalid group length (9)
+    sticks = [True] * 9
+    try:
+        split_group_into_two_identical_groups((0, 9), sticks)
+        assert False, "Expected ValueError for group length 9"
     except ValueError:
         pass
