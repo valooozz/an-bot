@@ -30,9 +30,16 @@ def split_group_into_one_single_and_one_group(group_position: GroupPosition, sti
 def split_group_into_two_identical_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
     group_index, group_length = group_position
     if group_length not in (5, 6, 7, 8):
-        raise ValueError("Can only split groups of length 5, 6, 7, or 8 into two groups")
+        raise ValueError("Can only split groups of length 5, 6, 7, or 8 into two identical groups")
     group_start = get_start_of_group(sticks, group_index)
     if group_length in (5, 6):
         return (group_start + 2, group_length - 4)
     elif group_length in (7, 8):
         return (group_start + 3, group_length - 6)
+
+def split_group_into_two_different_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
+    group_index, group_length = group_position
+    if group_length not in (6, 7, 8):
+        raise ValueError("Can only split groups of length 6, 7, or 8 into two different groups")
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start + 2, group_length - 5)
