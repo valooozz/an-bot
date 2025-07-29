@@ -42,6 +42,9 @@ def get_group_different_from_the_others(groups: Groups) -> GroupPosition:
     # b == c
     return 0, a
 
+def remove_singles(groups: Groups) -> Groups:
+    return [group for group in groups if group != 1]
+
 
 # def get_move_when_parity(sticks: Sticks, groups: Groups) -> Move:
 #     if is_parity_even(groups):
