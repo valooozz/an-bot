@@ -33,7 +33,6 @@ def is_parity_even(groups: Groups) -> bool:
 def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
     if len(groups) != 3:
         return False
-
     nb_of_groups_of_2 = 0
     nb_of_groups_of_3 = 0
     for group in groups:
@@ -43,8 +42,6 @@ def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
             nb_of_groups_of_2 += 1
         elif group == 3:
             nb_of_groups_of_3 += 1
-    
     if nb_of_groups_of_2 >= 2 or nb_of_groups_of_3 >= 2:
         return True
-    
     return False

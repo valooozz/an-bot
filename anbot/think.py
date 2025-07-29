@@ -1,4 +1,4 @@
-from game_types.game_types import Sticks, Groups
+from game_types.game_types import GroupPosition, Sticks, Groups
 from typing import Tuple
 
 def get_index_of_first_single(sticks: Sticks) -> int:
@@ -24,10 +24,23 @@ def get_start_of_group(sticks: Sticks, index_of_group: int) -> int:
             in_group = False
     raise ValueError("Group index out of range")
 
-def get_group_in_parity_state(groups: Groups) -> Tuple[int, int]:
+def get_group_in_parity_state(groups: Groups) -> GroupPosition:
     for idx, group in enumerate(groups):
         if group != 1:
             return idx, group
+
+def get_group_different_from_the_others(groups: Groups) -> GroupPosition:
+    if len(groups) > 3:
+        raise ValueError("More than three groups")
+    a, b, c = groups
+    if a == b == c:
+        return 0, a
+    if a == b:
+        return 2, c
+    if a == c:
+        return 1, b
+    # b == c
+    return 0, a
 
 
 # def get_move_when_parity(sticks: Sticks, groups: Groups) -> Move:

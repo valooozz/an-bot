@@ -1,6 +1,6 @@
 from anbot.think import get_index_of_first_single, get_start_of_group
 from game.game import log
-from game_types.game_types import GroupPosition, Move, Sticks
+from game_types.game_types import GroupPosition, Groups, Move, Sticks
 
 def take_first_single(sticks: Sticks) -> Move:
     log('Take first single')
@@ -55,3 +55,5 @@ def split_group_into_two_different_groups(group_position: GroupPosition, sticks:
         raise ValueError("Can only split groups of length 6, 7, or 8 into two different groups")
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 2, group_length - 5)
+
+# def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
