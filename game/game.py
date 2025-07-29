@@ -1,3 +1,4 @@
+from game.config import LOG_ACTIVE
 from game_types.game_types import Sticks, Move
 
 def display_sticks(sticks: Sticks) -> None:
@@ -25,3 +26,7 @@ def remove_sticks(sticks: Sticks, move: Move) -> None:
     start, count = move
     for i in range(start, start+count):
         sticks[i] = False
+
+def log(message: str):
+    if LOG_ACTIVE:
+        print(message)
