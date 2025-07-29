@@ -1,5 +1,5 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
-from anbot.think import get_start_of_group, get_group_in_parity_state
+from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups
 
 def test_analyze_sticks():
@@ -377,5 +377,38 @@ def test_split_group_into_two_different_groups():
     try:
         split_group_into_two_different_groups((0, 9), sticks)
         assert False, "Expected ValueError for group length 9"
+    except ValueError:
+        pass
+
+def test_get_index_of_first_single():
+    # Single stick at start
+    sticks = [True, False, False, False]
+    assert get_index_of_first_single(sticks) == 0
+
+    # Single stick at end
+    sticks = [False, False, False, True]
+    assert get_index_of_first_single(sticks) == 3
+
+    # Single stick in the middle
+    sticks = [False, True, False, False]
+    assert get_index_of_first_single(sticks) == 1
+
+    # Multiple singles, should return the first
+    sticks = [False, True, False, True, False, True]
+    assert get_index_of_first_single(sticks) == 1
+
+    # No singles (all taken)
+    sticks = [False, False, False]
+    try:
+        get_index_of_first_single(sticks)
+        assert False, "Expected ValueError when no singles are present"
+    except ValueError:
+        pass
+
+    # No singles (all sticks together)
+    sticks = [True, True, True]
+    try:
+        get_index_of_first_single(sticks)
+        assert False, "Expected ValueError when no singles are present"
     except ValueError:
         pass

@@ -2,6 +2,15 @@ from anbot.analyze import is_parity_even
 from game_types.game_types import Sticks, Groups, Move
 from typing import Tuple
 
+def get_index_of_first_single(sticks: Sticks) -> int:
+    for i, stick in enumerate(sticks):
+        if stick:
+            left_empty = (i == 0 or not sticks[i - 1])
+            right_empty = (i == len(sticks) - 1 or not sticks[i + 1])
+            if left_empty and right_empty:
+                return i
+    raise ValueError("No single stick found")
+
 def get_start_of_group(sticks: Sticks, index_of_group: int) -> int:
     group_count = 0
     in_group = False

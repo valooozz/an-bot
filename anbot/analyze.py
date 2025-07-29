@@ -24,7 +24,6 @@ def is_parity_state(groups: Groups) -> bool:
         if group in (2, 3, 4):
             count_big += 1
         elif group != 1:
-            log('Not in parity state')
             return False
     return count_big == 1
 
