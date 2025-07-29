@@ -30,8 +30,8 @@ def get_group_in_parity_state(groups: Groups) -> GroupPosition:
             return idx, group
 
 def get_group_different_from_the_others(groups: Groups) -> GroupPosition:
-    if len(groups) > 3:
-        raise ValueError("More than three groups")
+    if len(groups) != 3:
+        raise ValueError("Not exactly three groups")
     a, b, c = groups
     if a == b == c:
         return 0, a

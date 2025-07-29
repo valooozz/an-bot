@@ -1,4 +1,4 @@
-from anbot.think import get_index_of_first_single, get_start_of_group
+from anbot.think import get_group_different_from_the_others, get_index_of_first_single, get_start_of_group
 from game.game import log
 from game_types.game_types import GroupPosition, Groups, Move, Sticks
 
@@ -56,4 +56,8 @@ def split_group_into_two_different_groups(group_position: GroupPosition, sticks:
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 2, group_length - 5)
 
-# def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
+def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
+    log('Leave two identical groups')
+    group_index, group_length = get_group_different_from_the_others(groups)
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start, group_length)

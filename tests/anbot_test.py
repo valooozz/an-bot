@@ -1,6 +1,7 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other
-from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single
+from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups
+import pytest
 
 def test_analyze_sticks():
     # Test with all sticks present
@@ -112,20 +113,13 @@ def test_get_start_of_group():
 
     # All sticks taken (no groups) - should raise
     sticks = [False, False, False]
-    try:
+    with pytest.raises(ValueError):
         get_start_of_group(sticks, 0)
-        assert False, "Expected ValueError for no groups"
-    except ValueError:
-        pass
 
-    # Index out of range - should raise
     sticks = [True, True, False, True]
     # Only two groups, so index 2 is out of range
-    try:
+    with pytest.raises(ValueError):
         get_start_of_group(sticks, 2)
-        assert False, "Expected ValueError for group index out of range"
-    except ValueError:
-        pass
 
     # One big group
     sticks = [True, True, True]
@@ -204,19 +198,13 @@ def test_split_group_into_two_singles():
 
     # Test ValueError for invalid group length (2)
     sticks = [True, True]
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_singles((0, 2), sticks)
-        assert False, "Expected ValueError for group length 2"
-    except ValueError:
-        pass
 
     # Test ValueError for invalid group length (6)
     sticks = [True, True, True, True, True, True]
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_singles((0, 6), sticks)
-        assert False, "Expected ValueError for group length 6"
-    except ValueError:
-        pass
 
 def test_leave_one_single_from_group():
     # Test leaving one single from a group of 2
@@ -242,19 +230,13 @@ def test_leave_one_single_from_group():
 
     # Test ValueError for invalid group length (1)
     sticks = [True]
-    try:
+    with pytest.raises(ValueError):
         leave_one_single_from_group((0, 1), sticks)
-        assert False, "Expected ValueError for group length 1"
-    except ValueError:
-        pass
 
     # Test ValueError for invalid group length (5)
     sticks = [True, True, True, True, True]
-    try:
+    with pytest.raises(ValueError):
         leave_one_single_from_group((0, 5), sticks)
-        assert False, "Expected ValueError for group length 5"
-    except ValueError:
-        pass
 
 def test_split_group_into_one_single_and_one_group():
     # Test splitting a group of 4
@@ -285,19 +267,13 @@ def test_split_group_into_one_single_and_one_group():
 
     # Test ValueError for invalid group length (3)
     sticks = [True, True, True]
-    try:
+    with pytest.raises(ValueError):
         split_group_into_one_single_and_one_group((0, 3), sticks)
-        assert False, "Expected ValueError for group length 3"
-    except ValueError:
-        pass
 
     # Test ValueError for invalid group length (8)
     sticks = [True] * 8
-    try:
+    with pytest.raises(ValueError):
         split_group_into_one_single_and_one_group((0, 8), sticks)
-        assert False, "Expected ValueError for group length 8"
-    except ValueError:
-        pass
 
 def test_split_group_into_two_identical_groups():
     # Test splitting a group of 5
@@ -328,19 +304,13 @@ def test_split_group_into_two_identical_groups():
 
     # Test ValueError for invalid group length (4)
     sticks = [True] * 4
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_identical_groups((0, 4), sticks)
-        assert False, "Expected ValueError for group length 4"
-    except ValueError:
-        pass
 
     # Test ValueError for invalid group length (9)
     sticks = [True] * 9
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_identical_groups((0, 9), sticks)
-        assert False, "Expected ValueError for group length 9"
-    except ValueError:
-        pass
 
 def test_split_group_into_two_different_groups():
     # Test splitting a group of 6
@@ -366,19 +336,13 @@ def test_split_group_into_two_different_groups():
 
     # Test ValueError for invalid group length (4)
     sticks = [True] * 4
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_different_groups((0, 4), sticks)
-        assert False, "Expected ValueError for group length 4"
-    except ValueError:
-        pass
 
     # Test ValueError for invalid group length (9)
     sticks = [True] * 9
-    try:
+    with pytest.raises(ValueError):
         split_group_into_two_different_groups((0, 9), sticks)
-        assert False, "Expected ValueError for group length 9"
-    except ValueError:
-        pass
 
 def test_get_index_of_first_single():
     # Single stick at start
@@ -399,19 +363,13 @@ def test_get_index_of_first_single():
 
     # No singles (all taken)
     sticks = [False, False, False]
-    try:
+    with pytest.raises(ValueError):
         get_index_of_first_single(sticks)
-        assert False, "Expected ValueError when no singles are present"
-    except ValueError:
-        pass
 
     # No singles (all sticks together)
     sticks = [True, True, True]
-    try:
+    with pytest.raises(ValueError):
         get_index_of_first_single(sticks)
-        assert False, "Expected ValueError when no singles are present"
-    except ValueError:
-        pass
 
 def test_take_first_single():
     # Single stick at start
@@ -432,19 +390,13 @@ def test_take_first_single():
 
     # No singles (all taken)
     sticks = [False, False, False]
-    try:
+    with pytest.raises(ValueError):
         take_first_single(sticks)
-        assert False, "Expected ValueError when no singles are present"
-    except ValueError:
-        pass
 
     # No singles (all sticks together)
     sticks = [True, True, True]
-    try:
+    with pytest.raises(ValueError):
         take_first_single(sticks)
-        assert False, "Expected ValueError when no singles are present"
-    except ValueError:
-        pass
 
 def test_is_two_identical_groups_and_one_other():
     # Two groups of 2, one group of 3 (should be True)
@@ -473,3 +425,59 @@ def test_is_two_identical_groups_and_one_other():
 
     # Group greater than 3 (should be False)
     assert is_two_identical_groups_and_one_other([4, 2, 2]) is False
+
+def test_get_group_different_from_the_others():
+    # All groups equal
+    assert get_group_different_from_the_others([2, 2, 2]) == (0, 2)
+    assert get_group_different_from_the_others([1, 1, 1]) == (0, 1)
+    assert get_group_different_from_the_others([3, 3, 3]) == (0, 3)
+
+    # First two equal, third different
+    assert get_group_different_from_the_others([2, 2, 3]) == (2, 3)
+    assert get_group_different_from_the_others([1, 1, 2]) == (2, 2)
+    assert get_group_different_from_the_others([3, 3, 1]) == (2, 1)
+
+    # First and last equal, middle different
+    assert get_group_different_from_the_others([2, 3, 2]) == (1, 3)
+    assert get_group_different_from_the_others([1, 2, 1]) == (1, 2)
+    assert get_group_different_from_the_others([3, 1, 3]) == (1, 1)
+
+    # Last two equal, first different
+    assert get_group_different_from_the_others([3, 2, 2]) == (0, 3)
+    assert get_group_different_from_the_others([2, 1, 1]) == (0, 2)
+    assert get_group_different_from_the_others([1, 3, 3]) == (0, 1)
+
+    # More than three groups should raise ValueError
+    with pytest.raises(ValueError):
+        get_group_different_from_the_others([1, 1, 1, 1])
+
+    # Less than three groups: function expects exactly three, so unpacking will fail
+    with pytest.raises(ValueError):
+        get_group_different_from_the_others([1, 2])
+
+def test_leave_two_identical_groups():
+    # Two identical groups and one different, different is first
+    groups = [3, 2, 2]
+    sticks = [True, True, True, False, True, True, False, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (0, 3)
+
+    # Two identical groups and one different, different is last
+    groups = [2, 2, 3]
+    sticks = [True, True, False, True, True, False, True, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (6, 3)
+
+    # Two identical groups and one different, different is middle
+    groups = [2, 3, 2]
+    sticks = [True, True, False, True, True, True, False, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (3, 3)
+
+    # All groups identical (should return the first group)
+    groups = [1, 1, 1]
+    sticks = [True, False, True, False, True]
+    assert leave_two_identical_groups(groups, sticks) == (0, 1)
+
+    # Should raise ValueError if not exactly three groups
+    with pytest.raises(ValueError):
+        leave_two_identical_groups([2, 2], [True, True, False, True, True])
+    with pytest.raises(ValueError):
+        leave_two_identical_groups([1, 1, 1, 1], [True, False, True, False, True, False, True])
