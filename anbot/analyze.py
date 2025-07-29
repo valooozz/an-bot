@@ -59,3 +59,11 @@ def is_one_little_group_and_one_big_group(groups: Groups) -> bool:
 def is_even_number_of_singles(groups: Groups) -> bool:
     number_of_singles = sum(1 for group in groups if group == 1)
     return number_of_singles > 0 and number_of_singles % 2 == 0
+    
+def is_almost_two_identical_groups(groups: Groups) -> bool:
+    number_of_groups = len(groups)
+    if number_of_groups == 2:
+        return is_one_little_group_and_one_big_group(groups)    
+    if number_of_groups == 3:
+        return is_two_identical_groups_and_one_other(groups)
+    return False
