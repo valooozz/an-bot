@@ -1,4 +1,4 @@
-from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group
 from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups
 import pytest
@@ -402,11 +402,11 @@ def test_is_two_identical_groups_and_one_other():
     # Two groups of 2, one group of 3 (should be True)
     assert is_two_identical_groups_and_one_other([2, 2, 3]) is True
 
-    # Two groups of 3, one group of 2 (should be True)
-    assert is_two_identical_groups_and_one_other([3, 3, 2]) is True
+    # Two groups of 3, one group of 5 (should be True)
+    assert is_two_identical_groups_and_one_other([3, 3, 5]) is True
 
-    # Two groups of 2, one single (should be True)
-    assert is_two_identical_groups_and_one_other([2, 2, 1]) is True
+    # Two groups of 2, one group of 4 (should be True)
+    assert is_two_identical_groups_and_one_other([2, 2, 4]) is True
 
     # Two groups of 3, one single (should be True)
     assert is_two_identical_groups_and_one_other([3, 3, 1]) is True
@@ -423,8 +423,8 @@ def test_is_two_identical_groups_and_one_other():
     # Less than three groups (should be False)
     assert is_two_identical_groups_and_one_other([2, 2]) is False
 
-    # Group greater than 3 (should be False)
-    assert is_two_identical_groups_and_one_other([4, 2, 2]) is False
+    # Group greater than 5 (should be False)
+    assert is_two_identical_groups_and_one_other([6, 2, 2]) is False
 
 def test_get_group_different_from_the_others():
     # All groups equal
@@ -491,3 +491,45 @@ def test_leave_two_identical_groups():
         leave_two_identical_groups([2, 2], [True, True, False, True, True])
     with pytest.raises(ValueError):
         leave_two_identical_groups([1, 1, 1, 1], [True, False, True, False, True, False, True])
+
+def test_is_one_little_group_and_one_big_group():
+    # Valid cases: little group = 2, big group = 3, 4, 5
+    assert is_one_little_group_and_one_big_group([2, 3]) is True
+    assert is_one_little_group_and_one_big_group([3, 2]) is True
+    assert is_one_little_group_and_one_big_group([2, 4]) is True
+    assert is_one_little_group_and_one_big_group([4, 2]) is True
+    assert is_one_little_group_and_one_big_group([2, 5]) is True
+    assert is_one_little_group_and_one_big_group([5, 2]) is True
+
+    # Valid cases: little group = 3, big group = 4, 5, 6
+    assert is_one_little_group_and_one_big_group([3, 4]) is True
+    assert is_one_little_group_and_one_big_group([4, 3]) is True
+    assert is_one_little_group_and_one_big_group([3, 5]) is True
+    assert is_one_little_group_and_one_big_group([5, 3]) is True
+    assert is_one_little_group_and_one_big_group([3, 6]) is True
+    assert is_one_little_group_and_one_big_group([6, 3]) is True
+
+    # Invalid: both groups too small
+    assert is_one_little_group_and_one_big_group([1, 2]) is False
+    assert is_one_little_group_and_one_big_group([2, 1]) is False
+    assert is_one_little_group_and_one_big_group([1, 3]) is False
+    assert is_one_little_group_and_one_big_group([3, 1]) is False
+
+    # Invalid: both groups too big
+    assert is_one_little_group_and_one_big_group([4, 5]) is False
+    assert is_one_little_group_and_one_big_group([5, 4]) is False
+    assert is_one_little_group_and_one_big_group([5, 6]) is False
+    assert is_one_little_group_and_one_big_group([6, 5]) is False
+
+    # Invalid: both groups equal
+    assert is_one_little_group_and_one_big_group([2, 2]) is False
+    assert is_one_little_group_and_one_big_group([3, 3]) is False
+    assert is_one_little_group_and_one_big_group([4, 4]) is False
+
+    # Invalid: more than two groups
+    assert is_one_little_group_and_one_big_group([2, 3, 4]) is False
+    assert is_one_little_group_and_one_big_group([1, 2, 3]) is False
+
+    # Invalid: less than two groups
+    assert is_one_little_group_and_one_big_group([2]) is False
+    assert is_one_little_group_and_one_big_group([]) is False

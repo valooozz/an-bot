@@ -36,12 +36,23 @@ def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
     nb_of_groups_of_2 = 0
     nb_of_groups_of_3 = 0
     for group in groups:
-        if group > 3:
+        if group > 5:
             return False
         if group == 2:
             nb_of_groups_of_2 += 1
         elif group == 3:
             nb_of_groups_of_3 += 1
     if nb_of_groups_of_2 >= 2 or nb_of_groups_of_3 >= 2:
+        return True
+    return False
+
+def is_one_little_group_and_one_big_group(groups: Groups) -> bool:
+    if len(groups) != 2:
+        return False
+    groups.sort()
+    little_group, big_group = groups
+    if little_group == 2 and big_group in (3, 4, 5):
+        return True
+    if little_group == 3 and big_group in (4, 5, 6):
         return True
     return False
