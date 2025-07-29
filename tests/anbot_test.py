@@ -1,4 +1,4 @@
-from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_even_number_of_singles
 from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups
 import pytest
@@ -533,3 +533,29 @@ def test_is_one_little_group_and_one_big_group():
     # Invalid: less than two groups
     assert is_one_little_group_and_one_big_group([2]) is False
     assert is_one_little_group_and_one_big_group([]) is False
+
+def test_is_even_number_of_singles():
+    # Even number of singles
+    assert is_even_number_of_singles([1, 1]) is True
+    assert is_even_number_of_singles([1, 1, 1, 1]) is True
+    assert is_even_number_of_singles([1, 1, 1, 1, 1, 1]) is True
+
+    # Odd number of singles
+    assert is_even_number_of_singles([1]) is False
+    assert is_even_number_of_singles([1, 1, 1]) is False
+    assert is_even_number_of_singles([1, 1, 1, 1, 1]) is False
+
+    # Mixed groups with even number of singles
+    assert is_even_number_of_singles([1, 2, 1]) is True
+    assert is_even_number_of_singles([2, 1, 1, 3]) is True
+    assert is_even_number_of_singles([1, 4, 1, 2]) is True
+
+    # Mixed groups with odd number of singles
+    assert is_even_number_of_singles([1, 2]) is False
+    assert is_even_number_of_singles([2, 1, 1, 3, 1]) is False
+    assert is_even_number_of_singles([1, 4, 1, 2, 1]) is False
+
+    # No singles (all groups > 1)
+    assert is_even_number_of_singles([2, 3]) is False
+    assert is_even_number_of_singles([2, 3, 4]) is False
+    assert is_even_number_of_singles([2]) is False

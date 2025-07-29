@@ -56,3 +56,7 @@ def is_one_little_group_and_one_big_group(groups: Groups) -> bool:
     if little_group == 3 and big_group in (4, 5, 6):
         return True
     return False
+
+def is_even_number_of_singles(groups: Groups) -> bool:
+    number_of_singles = sum(1 for group in groups if group == 1)
+    return number_of_singles > 0 and number_of_singles % 2 == 0
