@@ -37,6 +37,11 @@ def split_group_into_one_single_and_one_group(group_position: GroupPosition, sti
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 1, min(group_length - 3, 3))
 
+def split_group_by_taking_one_stick(group_index: int, sticks: Sticks) -> Move:
+    log('Split group by taking one stick')
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start + 1, 1)
+
 def split_group_into_two_identical_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
     log('Split group into two identical groups')
     group_index, group_length = group_position

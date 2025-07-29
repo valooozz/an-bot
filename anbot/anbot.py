@@ -1,10 +1,10 @@
 from typing import List
-from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
+from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_one_group_left, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
 from anbot.think import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, leave_two_identical_groups, split_group_into_two_singles, take_first_single, take_whole_group
+from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_singles, take_first_single, take_whole_group
 from game.game import log
 import random
 
@@ -42,6 +42,17 @@ def handle_parity(sticks: Sticks, groups: Groups) -> Move:
     
     return move
 
+def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
+    group_size = groups[0]
+    log(f"Last group of {group_size}")
+    group_left = (0, group_size)
+    number_of_sticks_to_take = (group_size - 1) % 4
+
+    if number_of_sticks_to_take == 0:
+        return split_group_by_taking_one_stick(0, sticks)
+
+    return reduce_group(group_left, group_size - number_of_sticks_to_take, sticks)
+
 def print_move(move: Move):
     start, count = move
     print(f"\nAn-bot takes {count} stick{count > 1 and 's' or ''} starting at position {start+1}.")
@@ -70,6 +81,11 @@ def anbot_move(sticks: Sticks) -> None:
     if is_only_singles_left(groups):
         log('Only singles left')
         move = take_first_single(sticks)
+    if try_move(sticks, move): return
+
+    if is_one_group_left(groups):
+        log('One group left')
+        move = handle_one_group(sticks, groups)
     if try_move(sticks, move): return
 
     if is_parity_state(groups):
