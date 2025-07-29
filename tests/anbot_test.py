@@ -1,4 +1,4 @@
-from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other
 from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single
 
@@ -445,3 +445,31 @@ def test_take_first_single():
         assert False, "Expected ValueError when no singles are present"
     except ValueError:
         pass
+
+def test_is_two_identical_groups_and_one_other():
+    # Two groups of 2, one group of 3 (should be True)
+    assert is_two_identical_groups_and_one_other([2, 2, 3]) is True
+
+    # Two groups of 3, one group of 2 (should be True)
+    assert is_two_identical_groups_and_one_other([3, 3, 2]) is True
+
+    # Two groups of 2, one single (should be True)
+    assert is_two_identical_groups_and_one_other([2, 2, 1]) is True
+
+    # Two groups of 3, one single (should be True)
+    assert is_two_identical_groups_and_one_other([3, 3, 1]) is True
+
+    # Only singles (should be False)
+    assert is_two_identical_groups_and_one_other([1, 1, 1]) is False
+
+    # Three different sizes (should be False)
+    assert is_two_identical_groups_and_one_other([2, 1, 3]) is False
+
+    # More than three groups (should be False)
+    assert is_two_identical_groups_and_one_other([2, 2, 1, 1]) is False
+
+    # Less than three groups (should be False)
+    assert is_two_identical_groups_and_one_other([2, 2]) is False
+
+    # Group greater than 3 (should be False)
+    assert is_two_identical_groups_and_one_other([4, 2, 2]) is False
