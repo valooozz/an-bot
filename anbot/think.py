@@ -1,5 +1,4 @@
-from anbot.analyze import is_parity_even
-from game_types.game_types import Sticks, Groups, Move
+from game_types.game_types import Sticks, Groups
 from typing import Tuple
 
 def get_index_of_first_single(sticks: Sticks) -> int:

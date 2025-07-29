@@ -1,6 +1,10 @@
-from anbot.think import get_start_of_group
+from anbot.think import get_index_of_first_single, get_start_of_group
 from game.game import log
-from game_types.game_types import GroupPosition, Groups, Move, Sticks
+from game_types.game_types import GroupPosition, Move, Sticks
+
+def take_first_single(sticks: Sticks) -> Move:
+    first_single_index = get_index_of_first_single(sticks)
+    return (first_single_index, 1)
 
 def take_whole_group(group_position: GroupPosition, sticks: Sticks) -> Move:
     group_index, group_length = group_position

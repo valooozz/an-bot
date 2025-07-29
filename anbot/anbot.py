@@ -1,10 +1,11 @@
 from typing import List
-from anbot.analyze import analyze_sticks, is_parity_even, is_parity_state
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group
-from anbot.think import get_group_in_parity_state
+from anbot.analyze import analyze_sticks, is_parity_state
+from anbot.think import get_group_in_parity_state, handle_parity
 from game.game import is_valid_move, log, remove_sticks
-from game.config import LOG_ACTIVE
-from game_types.game_types import Sticks, Groups, Move
+from game_types.game_types import Groups, Sticks, Move
+from anbot.analyze import is_parity_even
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group
+from game.game import log
 import random
 
 def get_valid_moves(sticks: Sticks) -> List[Move]:
