@@ -1,10 +1,10 @@
 from typing import List
-from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
 from anbot.think import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_first_single, take_whole_group
+from anbot.do import leave_one_single_from_group, leave_two_identical_groups, split_group_into_two_singles, take_first_single, take_whole_group
 from game.game import log
 import random
 
@@ -75,6 +75,11 @@ def anbot_move(sticks: Sticks) -> None:
     if is_parity_state(groups):
         log('In parity state')
         move = handle_parity(sticks, groups)
+    if try_move(sticks, move): return
+
+    if is_two_identical_groups_and_one_other(groups):
+        log('Two identical groups and one other')
+        move = leave_two_identical_groups(groups, sticks)
     if try_move(sticks, move): return
 
     # Simple AI: random valid move
