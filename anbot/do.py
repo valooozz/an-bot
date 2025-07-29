@@ -59,5 +59,7 @@ def split_group_into_two_different_groups(group_position: GroupPosition, sticks:
 def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
     log('Leave two identical groups')
     group_index, group_length = get_group_different_from_the_others(groups)
-    group_start = get_start_of_group(sticks, group_index)
-    return (group_start, group_length)
+    if group_length in (1, 2, 3):
+        return take_whole_group((group_index, group_length), sticks)
+    elif group_length in (4, 5):
+        return split_group_into_two_singles((group_index, group_length), sticks)

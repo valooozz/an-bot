@@ -456,17 +456,17 @@ def test_get_group_different_from_the_others():
         get_group_different_from_the_others([1, 2])
 
 def test_leave_two_identical_groups():
-    # Two identical groups and one different, different is first
+    # Two identical groups and one different, different is first (group_length=3)
     groups = [3, 2, 2]
     sticks = [True, True, True, False, True, True, False, True, True]
     assert leave_two_identical_groups(groups, sticks) == (0, 3)
 
-    # Two identical groups and one different, different is last
+    # Two identical groups and one different, different is last (group_length=3)
     groups = [2, 2, 3]
     sticks = [True, True, False, True, True, False, True, True, True]
     assert leave_two_identical_groups(groups, sticks) == (6, 3)
 
-    # Two identical groups and one different, different is middle
+    # Two identical groups and one different, different is middle (group_length=3)
     groups = [2, 3, 2]
     sticks = [True, True, False, True, True, True, False, True, True]
     assert leave_two_identical_groups(groups, sticks) == (3, 3)
@@ -475,6 +475,16 @@ def test_leave_two_identical_groups():
     groups = [1, 1, 1]
     sticks = [True, False, True, False, True]
     assert leave_two_identical_groups(groups, sticks) == (0, 1)
+
+    # group_length=4 (should split group into two singles)
+    groups = [4, 2, 2]
+    sticks = [True, True, True, True, False, True, True, False, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (1, 2)
+
+    # group_length=5 (should split group into two singles)
+    groups = [2, 2, 5]
+    sticks = [True, True, False, True, True, False, True, True, True, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (7, 3)
 
     # Should raise ValueError if not exactly three groups
     with pytest.raises(ValueError):
