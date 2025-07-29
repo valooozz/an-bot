@@ -1,4 +1,4 @@
-from anbot.think import get_group_different_from_the_others, get_index_of_first_single, get_start_of_group
+from anbot.think import get_biggest_group_between_two, get_group_different_from_the_others, get_index_of_first_single, get_start_of_group
 from game.game import log
 from game_types.game_types import GroupPosition, Groups, Move, Sticks
 
@@ -66,8 +66,18 @@ def reduce_group(group_position: GroupPosition, new_length: int, sticks: Sticks)
 
 def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
     log('Leave two identical groups')
-    group_index, group_length = get_group_different_from_the_others(groups)
-    if group_length in (1, 2, 3):
-        return take_whole_group((group_index, group_length), sticks)
-    elif group_length in (4, 5):
-        return split_group_into_two_singles((group_index, group_length), sticks)
+    number_of_groups = len(groups)
+    if number_of_groups not in (2, 3):
+        raise ValueError("There must be only two or three groups")
+    if number_of_groups == 2:
+        log('From two remaining groups')
+        (group_index, group_length), new_length = get_biggest_group_between_two(groups)
+        return reduce_group((group_index, group_length), new_length, sticks)
+    elif number_of_groups == 3:
+        log('From three remaining groups')
+        group_index, group_length = get_group_different_from_the_others(groups)
+        if group_length in (1, 2, 3):
+            return take_whole_group((group_index, group_length), sticks)
+        elif group_length in (4, 5):
+            log('Leaving two singles')
+            return split_group_into_two_singles((group_index, group_length), sticks)

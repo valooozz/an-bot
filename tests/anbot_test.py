@@ -1,5 +1,5 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_even_number_of_singles
-from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others, remove_singles
+from anbot.think import get_biggest_group_between_two, get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others, remove_singles
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups, reduce_group
 import pytest
 
@@ -456,6 +456,15 @@ def test_get_group_different_from_the_others():
         get_group_different_from_the_others([1, 2])
 
 def test_leave_two_identical_groups():
+    # Two groups: should reduce the bigger group to match the smaller
+    groups = [2, 5]
+    sticks = [True, True, False, True, True, True, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (3, 3)
+
+    groups = [6, 3]
+    sticks = [True, True, True, True, True, True, False, True, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (0, 3)
+
     # Two identical groups and one different, different is first (group_length=3)
     groups = [3, 2, 2]
     sticks = [True, True, True, False, True, True, False, True, True]
@@ -486,9 +495,9 @@ def test_leave_two_identical_groups():
     sticks = [True, True, False, True, True, False, True, True, True, True, True]
     assert leave_two_identical_groups(groups, sticks) == (7, 3)
 
-    # Should raise ValueError if not exactly three groups
+    # Should raise ValueError if not exactly two or three groups
     with pytest.raises(ValueError):
-        leave_two_identical_groups([2, 2], [True, True, False, True, True])
+        leave_two_identical_groups([2], [True, True, False, True, True])
     with pytest.raises(ValueError):
         leave_two_identical_groups([1, 1, 1, 1], [True, False, True, False, True, False, True])
 
@@ -598,3 +607,18 @@ def test_reduce_group():
     sticks2 = [False, True, True, True, True, True, False]
     # groups: [5]
     assert reduce_group((0, 5), 2, sticks2) == (1, 3)
+
+def test_get_biggest_group():
+    # Two groups, first is bigger
+    assert get_biggest_group_between_two([5, 3]) == ((0, 5), 3)
+    # Two groups, second is bigger
+    assert get_biggest_group_between_two([2, 7]) == ((1, 7), 2)
+    # Two equal groups
+    with pytest.raises(ValueError):
+        get_biggest_group_between_two([4, 4])
+    # More than two groups
+    with pytest.raises(ValueError):
+        get_biggest_group_between_two([2, 3, 4])
+    # Less than two groups
+    with pytest.raises(ValueError):
+        get_biggest_group_between_two([5])

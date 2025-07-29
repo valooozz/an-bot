@@ -49,8 +49,7 @@ def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
 def is_one_little_group_and_one_big_group(groups: Groups) -> bool:
     if len(groups) != 2:
         return False
-    groups.sort()
-    little_group, big_group = groups
+    little_group, big_group = sorted(groups)
     if little_group == 2 and big_group in (3, 4, 5):
         return True
     if little_group == 3 and big_group in (4, 5, 6):
