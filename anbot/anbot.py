@@ -4,7 +4,7 @@ from anbot.think import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_singles, take_first_single, take_whole_group
+from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_singles, take_first_single, take_whole_group
 from game.game import log
 import random
 
@@ -27,31 +27,35 @@ def get_valid_moves(sticks: Sticks) -> List[Move]:
 
 def handle_parity(sticks: Sticks, groups: Groups) -> Move:
     group_to_take = get_group_in_parity_state(groups)
+    group_length = group_to_take[1]
     log(f"Group in parity state: {group_to_take}")
 
     if is_parity_even(groups):
         log('Even parity')
-        if group_to_take[0] in (4, 5):
+        if group_length in (4, 5):
             move = split_group_into_two_singles(group_to_take, sticks)
         else:
             move = take_whole_group(group_to_take, sticks)
     
     else: # odd parity
         log('Odd parity')
-        move = leave_one_single_from_group(group_to_take, sticks)
+        if group_length == 5:
+            move = split_group_into_two_identical_groups(group_to_take, sticks)
+        else:
+            move = leave_one_single_from_group(group_to_take, sticks)
     
     return move
 
 def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
-    group_size = groups[0]
-    log(f"Last group of {group_size}")
-    group_left = (0, group_size)
-    number_of_sticks_to_take = (group_size - 1) % 4
+    group_length = groups[0]
+    log(f"Last group of {group_length}")
+    group_left = (0, group_length)
+    number_of_sticks_to_take = (group_length - 1) % 4
 
     if number_of_sticks_to_take == 0:
         return split_group_by_taking_one_stick(0, sticks)
 
-    return reduce_group(group_left, group_size - number_of_sticks_to_take, sticks)
+    return reduce_group(group_left, group_length - number_of_sticks_to_take, sticks)
 
 def print_move(move: Move):
     start, count = move

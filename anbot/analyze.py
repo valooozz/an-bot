@@ -21,7 +21,7 @@ def is_only_singles_left(groups: Groups) -> bool:
 def is_parity_state(groups: Groups) -> bool:
     count_big = 0
     for group in groups:
-        if group in (2, 3, 4):
+        if group in (2, 3, 4, 5):
             count_big += 1
         elif group != 1:
             return False
