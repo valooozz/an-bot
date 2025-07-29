@@ -56,6 +56,14 @@ def split_group_into_two_different_groups(group_position: GroupPosition, sticks:
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 2, group_length - 5)
 
+def reduce_group(group_position: GroupPosition, new_length: int, sticks: Sticks) -> Move:
+    group_index, group_length = group_position
+    if group_length <= new_length:
+        return None
+    log(f"Reduce group of {group_length} into group of {new_length}")
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start, group_length - new_length)
+
 def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
     log('Leave two identical groups')
     group_index, group_length = get_group_different_from_the_others(groups)

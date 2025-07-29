@@ -1,6 +1,6 @@
 from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_even_number_of_singles
 from anbot.think import get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others, remove_singles
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups, reduce_group
 import pytest
 
 def test_analyze_sticks():
@@ -576,3 +576,25 @@ def test_remove_singles():
     assert remove_singles([1, 2, 3, 1]) == [2, 3]
     assert remove_singles([1, 1, 2, 1, 1]) == [2]
     assert remove_singles([1, 2, 1, 1, 3, 1]) == [2, 3]
+
+def test_reduce_group():
+    sticks = [True, True, False, True, True, True, False, True, True, True, True]
+    # groups: [2, 3, 4]
+
+    # Reduce group of 3 (index 1) to 2
+    assert reduce_group((1, 3), 2, sticks) == (3, 1)
+    # Reduce group of 4 (index 2) to 2
+    assert reduce_group((2, 4), 2, sticks) == (7, 2)
+    # Reduce group of 2 (index 0) to 1
+    assert reduce_group((0, 2), 1, sticks) == (0, 1)
+    # Reduce group of 4 (index 2) to 3
+    assert reduce_group((2, 4), 3, sticks) == (7, 1)
+
+    # If new_length >= group_length, should return None
+    assert reduce_group((1, 3), 3, sticks) is None
+    assert reduce_group((1, 3), 4, sticks) is None
+
+    # Reduce group of 5 to 2
+    sticks2 = [False, True, True, True, True, True, False]
+    # groups: [5]
+    assert reduce_group((0, 5), 2, sticks2) == (1, 3)
