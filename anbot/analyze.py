@@ -67,3 +67,6 @@ def is_almost_two_identical_groups(groups: Groups) -> bool:
     if number_of_groups == 3:
         return is_two_identical_groups_and_one_other(groups)
     return False
+
+def is_one_group_left(groups: Groups) -> bool:
+    return len(groups) == 1

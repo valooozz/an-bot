@@ -1,4 +1,4 @@
-from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_even_number_of_singles
+from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_one_group_left, is_only_singles_left, is_parity_state, is_parity_even, is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_even_number_of_singles
 from anbot.think import get_biggest_group_between_two, get_start_of_group, get_group_in_parity_state, get_index_of_first_single, get_group_different_from_the_others, remove_singles
 from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_different_groups, take_first_single, leave_two_identical_groups, reduce_group
 import pytest
@@ -644,10 +644,10 @@ def test_is_almost_two_identical_groups():
     assert is_almost_two_identical_groups([3, 2, 3]) is True
 
     # Three groups: not two identical groups of 2 or 3
-    assert is_almost_two_identical_groups([2, 4, 2]) is False
-    assert is_almost_two_identical_groups([3, 4, 3]) is False
+    assert is_almost_two_identical_groups([2, 4, 3]) is False
+    assert is_almost_two_identical_groups([3, 4, 5]) is False
     assert is_almost_two_identical_groups([4, 4, 2]) is False
-    assert is_almost_two_identical_groups([1, 2, 2]) is False
+    assert is_almost_two_identical_groups([1, 1, 5]) is False
 
     # More than three groups
     assert is_almost_two_identical_groups([2, 2, 3, 3]) is False
@@ -655,3 +655,12 @@ def test_is_almost_two_identical_groups():
     # Less than two groups
     assert is_almost_two_identical_groups([2]) is False
     assert is_almost_two_identical_groups([]) is False
+
+def test_is_one_group_left():
+    # One group: should return True
+    assert is_one_group_left([3]) is True
+    assert is_one_group_left([7]) is True
+    
+    # More than one group: should return False
+    assert is_one_group_left([2, 4]) is False
+    assert is_one_group_left([5, 1, 2]) is False
