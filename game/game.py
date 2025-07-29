@@ -1,5 +1,6 @@
 from game.config import LOG_ACTIVE
 from game_types.game_types import Sticks, Move
+import sys
 
 def display_sticks(sticks: Sticks) -> None:
     stick_line = ''.join('|  ' if stick else '   ' for stick in sticks)
@@ -29,4 +30,11 @@ def remove_sticks(sticks: Sticks, move: Move) -> None:
 
 def log(message: str):
     if LOG_ACTIVE:
-        print(message)
+        RESET = "\033[0m"
+        BOLD = "\033[1m"
+        CYAN = "\033[36m"
+        BG_BLACK = "\033[40m"
+        WHITE = "\033[97m"
+
+        formatted_message = f"{BOLD}{CYAN}[LOG]{RESET} {WHITE}{message}{RESET}"
+        print(formatted_message, file=sys.stderr)

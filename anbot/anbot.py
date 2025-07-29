@@ -1,10 +1,10 @@
 from typing import List
-from anbot.analyze import analyze_sticks, is_parity_state
-from anbot.think import get_group_in_parity_state, handle_parity
+from anbot.analyze import analyze_sticks, is_only_singles_left, is_parity_state
+from anbot.think import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_whole_group
+from anbot.do import leave_one_single_from_group, split_group_into_two_singles, take_first_single, take_whole_group
 from game.game import log
 import random
 
@@ -54,20 +54,28 @@ def apply_move(sticks: Sticks, move: Move):
     print_move(move)
     remove_sticks(sticks, move)
 
+def try_move(sticks: Sticks, move: Move) -> bool:
+    if move:
+        if is_valid_move(sticks, move):
+            apply_move(sticks, move)
+            return True
+        else:
+            print_invalid_move(move)
+    return False
+
 def anbot_move(sticks: Sticks) -> None:
     groups = analyze_sticks(sticks)
     move: Move | None = None
 
+    if is_only_singles_left(groups):
+        log('Only singles left')
+        move = take_first_single(sticks)
+    if try_move(sticks, move): return
+
     if is_parity_state(groups):
         log('In parity state')
         move = handle_parity(sticks, groups)
-
-    if move:
-        if is_valid_move(sticks, move):
-            apply_move(sticks, move)
-            return
-        else:
-            print_invalid_move(move)
+    if try_move(sticks, move): return
 
     # Simple AI: random valid move
     moves: List[Move] = get_valid_moves(sticks)

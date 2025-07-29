@@ -1,1 +1,1 @@
-LOG_ACTIVE = False
+LOG_ACTIVE = True
