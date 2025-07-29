@@ -55,11 +55,3 @@ def get_biggest_group_between_two(groups: Groups) -> Tuple[GroupPosition, int]:
 
 def remove_singles(groups: Groups) -> Groups:
     return [group for group in groups if group != 1]
-
-
-# def get_move_when_parity(sticks: Sticks, groups: Groups) -> Move:
-#     if is_parity_even(groups):
-#         # Find the index and value of the group that is not 1 (there is only one such group)
-        
-#         if group in [2, 3]:
-#             return get_start_of_group(sticks, )

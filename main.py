@@ -6,7 +6,7 @@ from game_types.game_types import Sticks
 def main() -> None:
     print("\nWelcome to Sixteen Sticks! You are playing against an-bot. Don't take the last stick!")
     sticks: Sticks = [True] * 16
-    player_turn: bool = True  # True = human, False = an-bot
+    player_turn: bool = True
     while True:
         display_sticks(sticks)
         if is_game_over(sticks):
