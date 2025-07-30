@@ -1,5 +1,5 @@
 from game.config import LOG_ACTIVE
-from game_types.game_types import Sticks, Move
+from game_types.game_types import Groups, Sticks, Move
 import sys
 
 def display_sticks(sticks: Sticks) -> None:
@@ -38,3 +38,10 @@ def log(message: str):
 
         formatted_message = f"{BOLD}{CYAN}[LOG]{RESET} {WHITE}{message}{RESET}"
         print(formatted_message, file=sys.stderr)
+
+def create_sticks_from_groups(groups: Groups) -> Sticks:
+    sticks: Sticks = []
+    for group in groups:
+        sticks += [True] * group
+        sticks.append(False)
+    return sticks

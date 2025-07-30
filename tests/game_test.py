@@ -1,4 +1,4 @@
-from game.game import display_sticks, is_game_over, is_valid_move, remove_sticks
+from game.game import create_sticks_from_groups, display_sticks, is_game_over, is_valid_move, remove_sticks
 
 def test_is_game_over():
     # All sticks present
@@ -60,3 +60,29 @@ def test_display_sticks(capsys):
     assert "3" in captured.out
     # Check that removed stick is blank
     assert "2" not in captured.out
+
+def test_create_sticks_from_groups():
+    # Test with three groups: (3, 2, 1)
+    groups = [3, 2, 1]
+    sticks = create_sticks_from_groups(groups)
+    assert sticks == [True, True, True, False, True, True, False, True, False]
+
+    # Test with one group: (4)
+    groups = [4]
+    sticks = create_sticks_from_groups(groups)
+    assert sticks == [True, True, True, True, False]
+
+    # Test with two groups: (2, 2)
+    groups = [2, 2]
+    sticks = create_sticks_from_groups(groups)
+    assert sticks == [True, True, False, True, True, False]
+
+    # Test with empty groups
+    groups = []
+    sticks = create_sticks_from_groups(groups)
+    assert sticks == []
+
+    # Test with group of size 1
+    groups = [1]
+    sticks = create_sticks_from_groups(groups)
+    assert sticks == [True, False]
