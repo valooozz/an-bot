@@ -110,7 +110,7 @@ def anbot_move(sticks: Sticks) -> None:
 
     if is_one_huge_group_and_one_other_group(groups):
         log('One huge group and one other group')
-        handle_huge_group(sticks, groups)
+        move = handle_huge_group(sticks, groups)
     if try_move(sticks, move): return
 
     # Simple AI: random valid move
