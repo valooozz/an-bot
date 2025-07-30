@@ -79,3 +79,8 @@ def add_indexes_of_removed_singles(index: int, indexes_of_removed_singles: Index
         if index_removed <= real_index:
             real_index += 1
     return real_index
+
+def get_huge_group(groups: Groups) -> GroupPosition:
+    for idx, group in enumerate(groups):
+        if group >= 8:
+            return (idx, group)

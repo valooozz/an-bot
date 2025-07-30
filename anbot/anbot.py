@@ -1,10 +1,10 @@
 from typing import List
 from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
-from anbot.think import add_indexes_of_removed_singles, get_group_in_parity_state, get_groups_without_pairs_of_singles
+from anbot.think import add_indexes_of_removed_singles, get_group_in_parity_state, get_groups_without_pairs_of_singles, get_huge_group
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_singles, take_first_single, take_whole_group
+from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups, take_first_single, take_whole_group
 from game.game import log
 import random
 
@@ -59,6 +59,10 @@ def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
 
     return reduce_group(group_left, group_length - number_of_sticks_to_take, sticks)
 
+def handle_huge_group(sticks: Sticks, groups: Groups) -> Move:
+    group_position = get_huge_group(groups)
+    return split_huge_group_into_two_different_groups(group_position, sticks)
+
 def print_move(move: Move):
     start, count = move
     print(f"\nAn-bot takes {count} stick{count > 1 and 's' or ''} starting at position {start+1}.")
@@ -106,7 +110,7 @@ def anbot_move(sticks: Sticks) -> None:
 
     if is_one_huge_group_and_one_other_group(groups):
         log('One huge group and one other group')
-        
+        handle_huge_group(sticks, groups)
     if try_move(sticks, move): return
 
     # Simple AI: random valid move
