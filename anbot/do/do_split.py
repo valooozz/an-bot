@@ -18,10 +18,12 @@ def split_group_into_one_single_and_one_group(group_position: GroupPosition, siz
     if group_length not in (4, 5, 6, 7):
         raise ValueError("Can only split groups of length 4, 5, 6, or 7 into one single and one group")
     if group_length - size_of_new_group < 2:
-        raise ValueError("Can only leave a group at least with two sticks less than the original")
+        log(f"Tried to split group of {group_length} into a single and a group of {size_of_new_group} : not enough sticks", 'warn')
+        return None
     number_of_sticks_to_remove = group_length - size_of_new_group - 1
     if number_of_sticks_to_remove > 3:
-        raise ValueError(f"Size of the new group ({size_of_new_group}) not reachable")
+        log(f"Tried to split group of {group_length} into a single and a group of {size_of_new_group} : too many sticks to remove", 'warn')
+        return None
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 1, number_of_sticks_to_remove)
 

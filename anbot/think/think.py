@@ -31,13 +31,13 @@ def get_huge_group(groups: Groups) -> GroupPosition:
             return (idx, group)
 
 def get_biggest_and_smallest_groups(groups: Groups) -> Tuple[GroupPosition, GroupPosition]:
-    biggest_group = (0, 0)
-    smallest_group = (0, 0)
+    biggest_group = (0, groups[0])
+    smallest_group = (0, groups[0])
     for idx, group in enumerate(groups):
-        if group == 1:
+        if group < 2:
             continue
-        if group > biggest_group:
+        if group > biggest_group[1]:
             biggest_group = (idx, group)
-        elif group < smallest_group:
+        elif group < smallest_group[1]:
             smallest_group = (idx, group)
     return (biggest_group, smallest_group)

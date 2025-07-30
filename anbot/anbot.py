@@ -3,12 +3,12 @@ from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge
 from anbot.analyze.analyze_parity import is_parity_even, is_parity_state
 from anbot.analyze.analyze_identical import is_almost_two_identical_groups
 from anbot.think.think_singles import add_indexes_of_removed_singles, get_groups_without_pairs_of_singles
-from anbot.think.think import get_huge_group
+from anbot.think.think import get_biggest_and_smallest_groups, get_huge_group
 from anbot.think.think_parity import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.do.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, take_first_single, take_whole_group
-from anbot.do.do_split import split_group_by_taking_one_stick, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups
+from anbot.do.do_split import split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups
 from game.game import log
 import random
 
@@ -63,8 +63,10 @@ def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
 
     return reduce_group(group_left, group_length - number_of_sticks_to_take, sticks)
 
-# def handle_two_groups_and_one_single(sticks: Sticks, groups: Groups) -> Move:
-
+def handle_two_groups_and_one_single(sticks: Sticks, groups: Groups) -> Move:
+    big_group, small_group = get_biggest_and_smallest_groups(groups)
+    size_of_small_group = small_group[1]
+    return split_group_into_one_single_and_one_group(big_group, size_of_small_group, sticks)
 
 def handle_huge_group(sticks: Sticks, groups: Groups) -> Move:
     group_position = get_huge_group(groups)
@@ -117,7 +119,7 @@ def anbot_move(sticks: Sticks) -> None:
 
     if is_two_groups_and_one_single(groups):
         log('Two groups and one single')
-        move = None
+        move = handle_two_groups_and_one_single(sticks, groups)
     if try_move(sticks, move): return
 
     if is_one_huge_group_and_one_other_group(groups):

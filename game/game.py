@@ -28,15 +28,22 @@ def remove_sticks(sticks: Sticks, move: Move) -> None:
     for i in range(start, start+count):
         sticks[i] = False
 
-def log(message: str):
+def log(message: str, level = 'thinking'):
     if LOG_ACTIVE:
         RESET = "\033[0m"
         BOLD = "\033[1m"
         CYAN = "\033[36m"
+        RED = "\033[31m"
+        ORANGE = "\033[38;5;208m"
         BG_BLACK = "\033[40m"
         WHITE = "\033[97m"
 
-        formatted_message = f"{BOLD}{CYAN}[LOG]{RESET} {WHITE}{message}{RESET}"
+        if level == 'thinking':
+            formatted_message = f"{BOLD}{CYAN}[THINKING] {message}{RESET}"
+        elif level == 'info':
+            formatted_message = f"{BOLD}{RED}  [INFO] {message}{RESET}"
+        elif level == 'warn':
+            formatted_message = f"{BOLD}{ORANGE}[WARN] {message}{RESET}"
         print(formatted_message, file=sys.stderr)
 
 def create_sticks_from_groups(groups: Groups) -> Sticks:
