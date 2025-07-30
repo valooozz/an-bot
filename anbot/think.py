@@ -55,15 +55,12 @@ def get_biggest_group_between_two(groups: Groups) -> Tuple[GroupPosition, int]:
 def get_number_of_singles(groups: Groups) -> Groups:
     return sum(1 for group in groups if group == 1)
 
-# def get_groups_without_pairs_of_singles(groups: Groups) -> Groups:
-#     number_of_singles = get_number_of_singles(groups)
-        
+def get_groups_without_pairs_of_singles(groups: Groups) -> Groups:
+    number_of_singles = get_number_of_singles(groups)
+    is_odd = number_of_singles % 2 != 0
+    remove_singles(groups, is_odd)
 
-def remove_all_singles(groups: Groups) -> Groups:
-    return [group for group in groups if group != 1]
-
-def remove_all_singles_except_one(groups: Groups) -> Groups:
-    accept_one = True
+def remove_singles(groups: Groups, accept_one: bool) -> Groups:
     new_groups: Groups = []
     for group in groups:
         if group == 1 and accept_one:
