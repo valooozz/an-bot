@@ -1,10 +1,14 @@
 from typing import List
-from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
-from anbot.think import add_indexes_of_removed_singles, get_group_in_parity_state, get_groups_without_pairs_of_singles, get_huge_group
+from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_parity_state
+from anbot.analyze.analyze_parity import is_parity_even
+from anbot.analyze.analyze_identical import is_almost_two_identical_groups
+from anbot.think.think_singles import add_indexes_of_removed_singles, get_groups_without_pairs_of_singles
+from anbot.think.think import get_huge_group
+from anbot.think.think_parity import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
-from anbot.analyze import is_parity_even
-from anbot.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, split_group_by_taking_one_stick, split_group_into_one_single_and_one_group, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups, take_first_single, take_whole_group
+from anbot.do.do import leave_one_single_from_group, leave_two_identical_groups, reduce_group, take_first_single, take_whole_group
+from anbot.do.do_split import split_group_by_taking_one_stick, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups
 from game.game import log
 import random
 
