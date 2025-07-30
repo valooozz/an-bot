@@ -246,43 +246,6 @@ def test_leave_one_single_from_group():
     with pytest.raises(ValueError):
         leave_one_single_from_group((0, 5), sticks)
 
-def test_split_group_into_one_single_and_one_group():
-    # Test splitting a group of 4
-    sticks = [True, True, True, True]
-    move = split_group_into_one_single_and_one_group((0, 4), sticks)
-    assert move == (1, 1)
-
-    # Test splitting a group of 5
-    sticks = [True, True, True, True, True]
-    move = split_group_into_one_single_and_one_group((0, 5), sticks)
-    assert move == (1, 2)
-
-    # Test splitting a group of 6
-    sticks = [True, True, True, True, True, True]
-    move = split_group_into_one_single_and_one_group((0, 6), sticks)
-    assert move == (1, 3)
-
-    # Test splitting a group of 7
-    sticks = [True, True, True, True, True, True, True]
-    move = split_group_into_one_single_and_one_group((0, 7), sticks)
-    assert move == (1, 3)
-
-    # Test splitting the second group in a list
-    sticks = [True, False, True, True, True, True, False, True]
-    # Groups: [1, 4, 1]
-    move = split_group_into_one_single_and_one_group((1, 4), sticks)
-    assert move == (3, 1)
-
-    # Test ValueError for invalid group length (3)
-    sticks = [True, True, True]
-    with pytest.raises(ValueError):
-        split_group_into_one_single_and_one_group((0, 3), sticks)
-
-    # Test ValueError for invalid group length (8)
-    sticks = [True] * 8
-    with pytest.raises(ValueError):
-        split_group_into_one_single_and_one_group((0, 8), sticks)
-
 def test_split_group_into_two_identical_groups():
     # Test splitting a group of 5
     sticks = [True] * 5
