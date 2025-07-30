@@ -1,3 +1,4 @@
+from anbot.think import get_groups_without_pairs_of_singles
 from game.game import log
 from game_types.game_types import Sticks, Groups
 
@@ -61,11 +62,12 @@ def is_even_number_of_singles(groups: Groups) -> bool:
     return number_of_singles > 0 and number_of_singles % 2 == 0
     
 def is_almost_two_identical_groups(groups: Groups) -> bool:
-    number_of_groups = len(groups)
+    groups_without_pairs_of_singles, _ = get_groups_without_pairs_of_singles(groups)
+    number_of_groups = len(groups_without_pairs_of_singles)
     if number_of_groups == 2:
-        return is_one_little_group_and_one_big_group(groups)    
+        return is_one_little_group_and_one_big_group(groups_without_pairs_of_singles)    
     if number_of_groups == 3:
-        return is_two_identical_groups_and_one_other(groups)
+        return is_two_identical_groups_and_one_other(groups_without_pairs_of_singles)
     return False
 
 def is_one_group_left(groups: Groups) -> bool:

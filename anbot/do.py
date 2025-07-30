@@ -1,4 +1,4 @@
-from anbot.think import get_biggest_group_between_two, get_group_different_from_the_others, get_index_of_first_single, get_start_of_group
+from anbot.think import add_indexes_of_removed_singles, get_biggest_group_between_two, get_group_different_from_the_others, get_groups_without_pairs_of_singles, get_index_of_first_single, get_start_of_group
 from game.game import log
 from game_types.game_types import GroupPosition, Groups, Move, Sticks
 
@@ -8,13 +8,13 @@ def take_first_single(sticks: Sticks) -> Move:
     return (first_single_index, 1)
 
 def take_whole_group(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Take whole group')
+    log(f"Take whole group : {group_position}")
     group_index, group_length = group_position
     group_start = get_start_of_group(sticks, group_index)
     return (group_start, group_length)
 
 def split_group_into_two_singles(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Split group into two singles')
+    log(f"Split group into two singles : {group_position}")
     group_index, group_length = group_position
     if group_length not in (3, 4, 5):
         raise ValueError("Can only split groups of length 3, 4, or 5 into two singles")
@@ -22,7 +22,7 @@ def split_group_into_two_singles(group_position: GroupPosition, sticks: Sticks) 
     return (group_start + 1, group_length - 2)
 
 def leave_one_single_from_group(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Leave one single from group')
+    log(f"Leave one single from group : {group_position}")
     group_index, group_length = group_position
     if group_length not in (2, 3, 4):
         raise ValueError("Can only leave one single from groups of length 2, 3, or 4")
@@ -30,7 +30,7 @@ def leave_one_single_from_group(group_position: GroupPosition, sticks: Sticks) -
     return (group_start, group_length - 1)
 
 def split_group_into_one_single_and_one_group(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Split group into one single and one group')
+    log(f"Split group into one single and one group : {group_position}")
     group_index, group_length = group_position
     if group_length not in (4, 5, 6, 7):
         raise ValueError("Can only split groups of length 4, 5, 6, or 7 into one single and one group")
@@ -38,12 +38,12 @@ def split_group_into_one_single_and_one_group(group_position: GroupPosition, sti
     return (group_start + 1, min(group_length - 3, 3))
 
 def split_group_by_taking_one_stick(group_index: int, sticks: Sticks) -> Move:
-    log('Split group by taking one stick')
+    log(f"Split group by taking one stick : {group_index}")
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 1, 1)
 
 def split_group_into_two_identical_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Split group into two identical groups')
+    log(f"Split group into two identical groups : {group_position}")
     group_index, group_length = group_position
     if group_length not in (5, 6, 7, 8):
         raise ValueError("Can only split groups of length 5, 6, 7, or 8 into two identical groups")
@@ -54,7 +54,7 @@ def split_group_into_two_identical_groups(group_position: GroupPosition, sticks:
         return (group_start + 3, group_length - 6)
 
 def split_group_into_two_different_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
-    log('Split group into two different groups')
+    log(f"Split group into two different groups : {group_position}")
     group_index, group_length = group_position
     if group_length not in (6, 7, 8):
         raise ValueError("Can only split groups of length 6, 7, or 8 into two different groups")
@@ -71,18 +71,21 @@ def reduce_group(group_position: GroupPosition, new_length: int, sticks: Sticks)
 
 def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
     log('Leave two identical groups')
-    number_of_groups = len(groups)
+    groups_without_pairs_of_singles, indexes_of_removed_singles = get_groups_without_pairs_of_singles(groups)
+    number_of_groups = len(groups_without_pairs_of_singles)
     if number_of_groups not in (2, 3):
         raise ValueError("There must be only two or three groups")
     if number_of_groups == 2:
         log('From two remaining groups')
-        (group_index, group_length), new_length = get_biggest_group_between_two(groups)
-        return reduce_group((group_index, group_length), new_length, sticks)
+        (group_index, group_length), new_length = get_biggest_group_between_two(groups_without_pairs_of_singles)
+        real_group_index = add_indexes_of_removed_singles(group_index, indexes_of_removed_singles)
+        return reduce_group((real_group_index, group_length), new_length, sticks)
     elif number_of_groups == 3:
         log('From three remaining groups')
-        group_index, group_length = get_group_different_from_the_others(groups)
+        group_index, group_length = get_group_different_from_the_others(groups_without_pairs_of_singles)
+        real_group_index = add_indexes_of_removed_singles(group_index, indexes_of_removed_singles)
         if group_length in (1, 2, 3):
-            return take_whole_group((group_index, group_length), sticks)
+            return take_whole_group((real_group_index, group_length), sticks)
         elif group_length in (4, 5):
             log('Leaving two singles')
-            return split_group_into_two_singles((group_index, group_length), sticks)
+            return split_group_into_two_singles((real_group_index, group_length), sticks)
