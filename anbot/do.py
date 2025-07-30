@@ -87,6 +87,6 @@ def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
         elif group_length in (4, 5):
             log('Leaving two singles')
             return split_group_into_two_singles((real_group_index, group_length), sticks)
-        elif group_length in (6, 7, 8):
+        elif group_length in (6, 7, 8, 9, 10, 11, 12, 13):
             log('Leaving two identical groups')
             return split_group_into_two_identical_groups((real_group_index, group_length), sticks)
