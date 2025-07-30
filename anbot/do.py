@@ -45,13 +45,11 @@ def split_group_by_taking_one_stick(group_index: int, sticks: Sticks) -> Move:
 def split_group_into_two_identical_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
     log(f"Split group into two identical groups : {group_position}")
     group_index, group_length = group_position
-    if group_length not in (5, 6, 7, 8):
-        raise ValueError("Can only split groups of length 5, 6, 7, or 8 into two identical groups")
+    if group_length not in (5, 6, 7, 8, 9, 10, 11, 12, 13):
+        raise ValueError("Can only split groups of length 5, 6, 7, 8, 9, 10, 11, 12 or 13 into two identical groups")
     group_start = get_start_of_group(sticks, group_index)
-    if group_length in (5, 6):
-        return (group_start + 2, group_length - 4)
-    elif group_length in (7, 8):
-        return (group_start + 3, group_length - 6)
+    shift = max(group_length // 2 - 1, 2)
+    return (group_start + shift, group_length - shift * 2)
 
 def split_group_into_two_different_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
     log(f"Split group into two different groups : {group_position}")
@@ -89,3 +87,6 @@ def leave_two_identical_groups(groups: Groups, sticks: Sticks) -> Move:
         elif group_length in (4, 5):
             log('Leaving two singles')
             return split_group_into_two_singles((real_group_index, group_length), sticks)
+        elif group_length in (6, 7, 8):
+            log('Leaving two identical groups')
+            return split_group_into_two_identical_groups((real_group_index, group_length), sticks)

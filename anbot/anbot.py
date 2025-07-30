@@ -1,6 +1,6 @@
 from typing import List
 from anbot.analyze import analyze_sticks, is_almost_two_identical_groups, is_one_group_left, is_only_singles_left, is_parity_state, is_two_identical_groups_and_one_other
-from anbot.think import get_group_in_parity_state
+from anbot.think import add_indexes_of_removed_singles, get_group_in_parity_state, get_groups_without_pairs_of_singles
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
 from anbot.analyze import is_parity_even
@@ -47,9 +47,11 @@ def handle_parity(sticks: Sticks, groups: Groups) -> Move:
     return move
 
 def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
-    group_length = groups[0]
+    groups_without_pairs_of_singles, indexes_of_removed_singles = get_groups_without_pairs_of_singles(groups)
+    group_length = groups_without_pairs_of_singles[0]
     log(f"Last group of {group_length}")
-    group_left = (0, group_length)
+    real_group_index = add_indexes_of_removed_singles(0, indexes_of_removed_singles)
+    group_left = (real_group_index, group_length)
     number_of_sticks_to_take = (group_length - 1) % 4
 
     if number_of_sticks_to_take == 0:

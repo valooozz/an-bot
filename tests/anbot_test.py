@@ -78,8 +78,11 @@ def test_is_parity_state():
     # Two groups of 2: not a parity state
     assert is_parity_state([2, 2]) == False
 
-    # One group of 5: not a parity state
-    assert is_parity_state([5]) == False
+    # One group of 5: parity state
+    assert is_parity_state([5]) == True
+
+    # One group of 6: not a parity state
+    assert is_parity_state([6]) == False
 
     # Group of 2 and group of 3: not a parity state
     assert is_parity_state([2, 3]) == False
@@ -289,7 +292,7 @@ def test_split_group_into_two_identical_groups():
     # Test splitting a group of 7
     sticks = [True] * 7
     move = split_group_into_two_identical_groups((0, 7), sticks)
-    assert move == (3, 1)
+    assert move == (2, 3)
 
     # Test splitting a group of 8
     sticks = [True] * 8
@@ -307,10 +310,10 @@ def test_split_group_into_two_identical_groups():
     with pytest.raises(ValueError):
         split_group_into_two_identical_groups((0, 4), sticks)
 
-    # Test ValueError for invalid group length (9)
-    sticks = [True] * 9
+    # Test ValueError for invalid group length (14)
+    sticks = [True] * 14
     with pytest.raises(ValueError):
-        split_group_into_two_identical_groups((0, 9), sticks)
+        split_group_into_two_identical_groups((0, 14), sticks)
 
 def test_split_group_into_two_different_groups():
     # Test splitting a group of 6
@@ -405,11 +408,11 @@ def test_is_two_identical_groups_and_one_other():
     # Two groups of 3, one group of 5 (should be True)
     assert is_two_identical_groups_and_one_other([3, 3, 5]) is True
 
-    # Two groups of 2, one group of 4 (should be True)
-    assert is_two_identical_groups_and_one_other([2, 2, 4]) is True
+    # Two groups of 5, one group of 4 (should be True)
+    assert is_two_identical_groups_and_one_other([5, 5, 4]) is True
 
-    # Two groups of 3, one single (should be True)
-    assert is_two_identical_groups_and_one_other([3, 3, 1]) is True
+    # Two groups of 4, one single (should be True)
+    assert is_two_identical_groups_and_one_other([4, 1, 4]) is True
 
     # Only singles (should be False)
     assert is_two_identical_groups_and_one_other([1, 1, 1]) is False
@@ -422,9 +425,6 @@ def test_is_two_identical_groups_and_one_other():
 
     # Less than three groups (should be False)
     assert is_two_identical_groups_and_one_other([2, 2]) is False
-
-    # Group greater than 5 (should be False)
-    assert is_two_identical_groups_and_one_other([6, 2, 2]) is False
 
 def test_get_group_different_from_the_others():
     # All groups equal
@@ -481,9 +481,9 @@ def test_leave_two_identical_groups():
     assert leave_two_identical_groups(groups, sticks) == (3, 3)
 
     # All groups identical (should return the first group)
-    groups = [1, 1, 1]
-    sticks = [True, False, True, False, True]
-    assert leave_two_identical_groups(groups, sticks) == (0, 1)
+    groups = [2, 2, 2]
+    sticks = [True, True, False, False, True, True, False, True, True]
+    assert leave_two_identical_groups(groups, sticks) == (0, 2)
 
     # group_length=4 (should split group into two singles)
     groups = [4, 2, 2]
@@ -518,6 +518,12 @@ def test_is_one_little_group_and_one_big_group():
     assert is_one_little_group_and_one_big_group([3, 6]) is True
     assert is_one_little_group_and_one_big_group([6, 3]) is True
 
+    # Valid: big groups
+    assert is_one_little_group_and_one_big_group([4, 5]) is True
+    assert is_one_little_group_and_one_big_group([5, 4]) is True
+    assert is_one_little_group_and_one_big_group([5, 6]) is True
+    assert is_one_little_group_and_one_big_group([6, 5]) is True
+
     # Invalid: both groups too small
     assert is_one_little_group_and_one_big_group([1, 2]) is False
     assert is_one_little_group_and_one_big_group([2, 1]) is False
@@ -525,10 +531,10 @@ def test_is_one_little_group_and_one_big_group():
     assert is_one_little_group_and_one_big_group([3, 1]) is False
 
     # Invalid: both groups too big
-    assert is_one_little_group_and_one_big_group([4, 5]) is False
-    assert is_one_little_group_and_one_big_group([5, 4]) is False
-    assert is_one_little_group_and_one_big_group([5, 6]) is False
-    assert is_one_little_group_and_one_big_group([6, 5]) is False
+    assert is_one_little_group_and_one_big_group([6, 8]) is False
+    assert is_one_little_group_and_one_big_group([7, 8]) is False
+    assert is_one_little_group_and_one_big_group([8, 10]) is False
+    assert is_one_little_group_and_one_big_group([6, 9]) is False
 
     # Invalid: both groups equal
     assert is_one_little_group_and_one_big_group([2, 2]) is False
@@ -618,7 +624,7 @@ def test_is_almost_two_identical_groups():
     # Two groups: not matching the pattern
     assert is_almost_two_identical_groups([2, 6]) is False
     assert is_almost_two_identical_groups([1, 2]) is False
-    assert is_almost_two_identical_groups([4, 5]) is False
+    assert is_almost_two_identical_groups([7, 8]) is False
 
     # Three groups: two identical groups of 2 or 3
     assert is_almost_two_identical_groups([2, 2, 3]) is True
@@ -626,10 +632,10 @@ def test_is_almost_two_identical_groups():
     assert is_almost_two_identical_groups([2, 3, 2]) is True
     assert is_almost_two_identical_groups([3, 2, 3]) is True
 
-    # Three groups: not two identical groups of 2 or 3
+    # Three groups: not two identical groups of the right size
     assert is_almost_two_identical_groups([2, 4, 3]) is False
     assert is_almost_two_identical_groups([3, 4, 5]) is False
-    assert is_almost_two_identical_groups([4, 4, 2]) is False
+    assert is_almost_two_identical_groups([8, 8, 2]) is False
     assert is_almost_two_identical_groups([1, 1, 5]) is False
 
     # More than three groups
@@ -643,7 +649,12 @@ def test_is_one_group_left():
     # One group: should return True
     assert is_one_group_left([3]) is True
     assert is_one_group_left([7]) is True
+
+    # One group with pairs of singles: should return True
+    assert is_one_group_left([1, 3, 1]) is True
+    assert is_one_group_left([7, 1, 1, 1, 1]) is True
     
     # More than one group: should return False
     assert is_one_group_left([2, 4]) is False
     assert is_one_group_left([5, 1, 2]) is False
+    assert is_one_group_left([7, 1, 1, 1]) is False

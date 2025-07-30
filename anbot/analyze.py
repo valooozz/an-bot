@@ -1,3 +1,4 @@
+from typing import List
 from anbot.think import get_groups_without_pairs_of_singles
 from game.game import log
 from game_types.game_types import Sticks, Groups
@@ -34,16 +35,11 @@ def is_parity_even(groups: Groups) -> bool:
 def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
     if len(groups) != 3:
         return False
-    nb_of_groups_of_2 = 0
-    nb_of_groups_of_3 = 0
+    numbers_of_groups: List[int] = [0] * 4
     for group in groups:
-        if group > 5:
-            return False
-        if group == 2:
-            nb_of_groups_of_2 += 1
-        elif group == 3:
-            nb_of_groups_of_3 += 1
-    if nb_of_groups_of_2 >= 2 or nb_of_groups_of_3 >= 2:
+        if group in (2, 3, 4, 5):
+            numbers_of_groups[group - 2] += 1
+    if any(count >= 2 for count in numbers_of_groups):
         return True
     return False
 
@@ -51,9 +47,8 @@ def is_one_little_group_and_one_big_group(groups: Groups) -> bool:
     if len(groups) != 2:
         return False
     little_group, big_group = sorted(groups)
-    if little_group == 2 and big_group in (3, 4, 5):
-        return True
-    if little_group == 3 and big_group in (4, 5, 6):
+    difference = big_group - little_group
+    if little_group in (2, 3, 4, 5) and difference <= 3 and difference > 0:
         return True
     return False
 
@@ -71,4 +66,5 @@ def is_almost_two_identical_groups(groups: Groups) -> bool:
     return False
 
 def is_one_group_left(groups: Groups) -> bool:
-    return len(groups) == 1
+    groups_without_pairs_of_singles, _ = get_groups_without_pairs_of_singles(groups)
+    return len(groups_without_pairs_of_singles) == 1
