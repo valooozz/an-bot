@@ -1,4 +1,6 @@
 from typing import List
+
+from _pytest.stash import T
 from anbot.think import get_groups_without_pairs_of_singles
 from game.game import log
 from game_types.game_types import Sticks, Groups
@@ -68,3 +70,11 @@ def is_almost_two_identical_groups(groups: Groups) -> bool:
 def is_one_group_left(groups: Groups) -> bool:
     groups_without_pairs_of_singles, _ = get_groups_without_pairs_of_singles(groups)
     return len(groups_without_pairs_of_singles) == 1
+
+def is_one_huge_group_and_one_other_group(groups: Groups) -> bool:
+    if len(groups) != 2:
+        return False
+    big_group = sorted(groups)[1]
+    if big_group >= 8:
+        return True
+    return False
