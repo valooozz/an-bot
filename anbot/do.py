@@ -59,6 +59,14 @@ def split_group_into_two_different_groups(group_position: GroupPosition, sticks:
     group_start = get_start_of_group(sticks, group_index)
     return (group_start + 2, group_length - 5)
 
+def split_huge_group_into_two_different_groups(group_position: GroupPosition, sticks: Sticks) -> Move:
+    log(f"Split huge group into two different groups: {group_position}")
+    group_index, group_length = group_position
+    if group_length < 8:
+        raise ValueError("Can only split huge groups of length higher or equals to 8 into two different groups")
+    group_start = get_start_of_group(sticks, group_index)
+    return (group_start + (group_length - 8) // 3 + 3, group_length - (group_length - 8) // 3 * 3 - 7)
+
 def reduce_group(group_position: GroupPosition, new_length: int, sticks: Sticks) -> Move:
     group_index, group_length = group_position
     if group_length <= new_length:
