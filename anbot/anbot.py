@@ -1,6 +1,6 @@
 from typing import List
-from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_parity_state
-from anbot.analyze.analyze_parity import is_parity_even
+from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_two_groups_and_one_single
+from anbot.analyze.analyze_parity import is_parity_even, is_parity_state
 from anbot.analyze.analyze_identical import is_almost_two_identical_groups
 from anbot.think.think_singles import add_indexes_of_removed_singles, get_groups_without_pairs_of_singles
 from anbot.think.think import get_huge_group
@@ -110,6 +110,11 @@ def anbot_move(sticks: Sticks) -> None:
     if is_almost_two_identical_groups(groups):
         log('Almost two identical groups')
         move = leave_two_identical_groups(groups, sticks)
+    if try_move(sticks, move): return
+
+    if is_two_groups_and_one_single(groups):
+        log('Two groups and one single')
+        move = None
     if try_move(sticks, move): return
 
     if is_one_huge_group_and_one_other_group(groups):

@@ -1,5 +1,5 @@
-from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_parity_state
-from anbot.analyze.analyze_parity import is_parity_even
+from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left
+from anbot.analyze.analyze_parity import is_parity_even, is_parity_state
 from anbot.analyze.analyze_identical import is_two_identical_groups_and_one_other, is_one_little_group_and_one_big_group, is_almost_two_identical_groups
 from anbot.think.think import get_start_of_group, get_index_of_first_single
 from anbot.think.think_identical import get_biggest_group_between_two, get_group_different_from_the_others
