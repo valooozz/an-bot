@@ -1,3 +1,4 @@
+from typing import Tuple
 from game_types.game_types import GroupPosition, Sticks, Groups
 
 
@@ -28,3 +29,15 @@ def get_huge_group(groups: Groups) -> GroupPosition:
     for idx, group in enumerate(groups):
         if group >= 8:
             return (idx, group)
+
+def get_biggest_and_smallest_groups(groups: Groups) -> Tuple[GroupPosition, GroupPosition]:
+    biggest_group = (0, 0)
+    smallest_group = (0, 0)
+    for idx, group in enumerate(groups):
+        if group == 1:
+            continue
+        if group > biggest_group:
+            biggest_group = (idx, group)
+        elif group < smallest_group:
+            smallest_group = (idx, group)
+    return (biggest_group, smallest_group)

@@ -63,6 +63,9 @@ def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
 
     return reduce_group(group_left, group_length - number_of_sticks_to_take, sticks)
 
+# def handle_two_groups_and_one_single(sticks: Sticks, groups: Groups) -> Move:
+
+
 def handle_huge_group(sticks: Sticks, groups: Groups) -> Move:
     group_position = get_huge_group(groups)
     return split_huge_group_into_two_different_groups(group_position, sticks)
