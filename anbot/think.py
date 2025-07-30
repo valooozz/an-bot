@@ -57,7 +57,18 @@ def get_number_of_singles(groups: Groups) -> Groups:
 
 # def get_groups_without_pairs_of_singles(groups: Groups) -> Groups:
 #     number_of_singles = get_number_of_singles(groups)
-    
+        
 
-def remove_singles(groups: Groups) -> Groups:
+def remove_all_singles(groups: Groups) -> Groups:
     return [group for group in groups if group != 1]
+
+def remove_all_singles_except_one(groups: Groups) -> Groups:
+    accept_one = True
+    new_groups: Groups = []
+    for group in groups:
+        if group == 1 and accept_one:
+            new_groups.push(1)
+            accept_one = False
+        elif group != 1:
+            new_groups.push(group)
+    return new_groups
