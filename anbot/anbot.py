@@ -103,7 +103,7 @@ def try_move(sticks: Sticks, move: Move) -> bool:
     return False
 
 def anbot_move(sticks: Sticks) -> None:
-    if ANBOT_MODE == 'SCORE':
+    if ANBOT_MODE == 'SCORING':
         move = get_best_move_by_score(sticks)
         if try_move(sticks, move): return
 
@@ -140,11 +140,15 @@ def anbot_move(sticks: Sticks) -> None:
         move = handle_two_close_groups_and_one_little_group(sticks, groups)
         if try_move(sticks, move): return
 
+    if ANBOT_MODE == 'HYBRID':
+        move = get_best_move_by_score(sticks)
+        if try_move(sticks, move): return
+        
     if is_one_huge_group_and_one_other_group(groups):
         log('One huge group and one other group')
         move = handle_huge_group(sticks, groups)
         if try_move(sticks, move): return
-
+    
     # Simple AI: random valid move
     log('Random move')
     moves: List[Move] = get_valid_moves(sticks)
