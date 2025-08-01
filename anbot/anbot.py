@@ -58,6 +58,13 @@ def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
     log(f"Last group of {group_length}")
     real_group_index = add_indexes_of_removed_singles(0, indexes_of_removed_singles)
     group_left = (real_group_index, group_length)
+
+    if group_length <= 4:
+        return reduce_group(group_left, 1, sticks)
+
+    if group_length <= 11:
+        return split_group_into_two_identical_groups(group_left, sticks)
+
     number_of_sticks_to_take = (group_length - 1) % 4
 
     if number_of_sticks_to_take == 0:
