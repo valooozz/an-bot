@@ -4,8 +4,9 @@ from anbot.analyze.analyze import analyze_sticks, is_only_singles_left
 from anbot.analyze.analyze_identical import is_two_identical_groups
 from anbot.analyze.analyze_parity import is_parity_state
 from anbot.think.think_singles import get_groups_without_pairs_of_singles, remove_singles
+from game.config import DIGGING_LEVEL
 from game.game import log
-from game_types.game_types import Move, Sticks
+from game_types.game_types import Groups, Move, Sticks
 
 def get_possible_moves(sticks: Sticks) -> List[Move]:
     possible_moves: List[Move] = []
@@ -34,35 +35,42 @@ def simulate_remove_sticks(sticks: Sticks, move: Move) -> Sticks:
             next_position[i] = sticks[i]
     return next_position
 
-def assign_score_to_move(move: Move, sticks: Sticks) -> int:
+def assign_simple_score(groups: Groups) -> int:
+    if groups == [] or groups == [1]:
+        return len(groups) * 2 - 1
+    if is_parity_state(groups):
+        return -1
+    if is_two_identical_groups(groups) and groups[0] in (2, 3, 4):
+        return 1
+    if len(groups) == 1:
+        group_left = groups[0]
+        if group_left in (2, 3, 4, 5, 6, 7, 8, 9):
+            return -1
+        elif (group_left - 1) % 4 == 0:
+            return 1
+    return 0
+
+def assign_score_by_digging(sticks: Sticks, level: int) -> int:
+    if level > DIGGING_LEVEL:
+        return 0
+    possible_moves = get_possible_moves(sticks)
+    scores = get_scores(possible_moves, sticks, level + 1)
+    mean_score = sum(scores.values()) / len(scores)
+    return mean_score * (-1 if level % 2 == 0 else 1)
+
+def assign_score_to_move(move: Move, sticks: Sticks, level: int) -> int:
     next_position = simulate_remove_sticks(sticks, move)
     next_groups = analyze_sticks(next_position)
     next_groups_without_singles, _ = get_groups_without_pairs_of_singles(next_groups)
-    if next_groups_without_singles == [] or next_groups_without_singles == [1]:
-        return len(next_groups_without_singles) * 10 - 5
-    if is_parity_state(next_groups_without_singles):
-        return -5
-    if is_two_identical_groups(next_groups_without_singles):
-        if next_groups_without_singles[0] in (2, 3, 4):
-            return 5
-        else:
-            return 0
-    if len(next_groups_without_singles) == 1:
-        group_left = next_groups_without_singles[0]
-        if group_left in (2, 3, 4):
-            return -5
-        elif group_left in (5, 6, 7, 8, 9):
-            return -3
-        elif (group_left - 1) % 4 == 0:
-            return 4
-        else:
-            return -2
-    return 0
+    score = assign_simple_score(next_groups_without_singles)
+    if score == 0:
+        score = assign_score_by_digging(next_position, level)
+    return score
 
-def get_scores(possible_moves: List[Move], sticks: Sticks) -> Dict[Move, int]:
+def get_scores(possible_moves: List[Move], sticks: Sticks, level: int) -> Dict[Move, int]:
     dict_of_scores: Dict[Move, int] = {}
     for possible_move in possible_moves:
-        dict_of_scores[possible_move] = assign_score_to_move(possible_move, sticks)
+        dict_of_scores[possible_move] = assign_score_to_move(possible_move, sticks, level)
     return dict_of_scores
 
 def get_move_with_best_score(scores: Dict[Move, int]) -> Move:
@@ -73,6 +81,6 @@ def get_move_with_best_score(scores: Dict[Move, int]) -> Move:
 
 def get_best_move_by_score(sticks: Sticks) -> Move:
     possible_moves = get_possible_moves(sticks)
-    scores = get_scores(possible_moves, sticks)
+    scores = get_scores(possible_moves, sticks, 1)
     log(f"Scores : {scores}")
     return get_move_with_best_score(scores)
