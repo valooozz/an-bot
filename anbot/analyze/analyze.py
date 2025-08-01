@@ -49,3 +49,9 @@ def is_two_close_groups_and_one_little_group(groups: Groups) -> bool:
         if sorted_groups[first] in (2, 3, 4) and sorted_groups[third] == sorted_groups[second] + 1 :
             return True
     return False
+
+def is_two_close_groups_and_one_single(groups: Groups) -> bool:
+    if len(groups) != 3:
+        return False
+    sorted_groups = sorted(groups)
+    return sorted_groups[0] == 1 and sorted_groups[1] + 1 == sorted_groups[2]

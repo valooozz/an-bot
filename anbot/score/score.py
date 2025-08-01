@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List
-from anbot.analyze.analyze import analyze_sticks, is_only_singles_left
+from anbot.analyze.analyze import analyze_sticks, is_only_singles_left, is_two_close_groups_and_one_single
 from anbot.analyze.analyze_identical import is_two_identical_groups
 from anbot.analyze.analyze_parity import is_parity_state
 from anbot.think.think_singles import get_groups_without_pairs_of_singles, remove_singles
@@ -36,18 +36,20 @@ def simulate_remove_sticks(sticks: Sticks, move: Move) -> Sticks:
     return next_position
 
 def assign_simple_score(groups: Groups) -> int:
-    if groups == [] or groups == [1]:
-        return len(groups) * 2 - 1
+    if groups == []:
+        return -1
+    if groups == [1]:
+        return 1
+    if is_only_singles_left(groups):
+        return 1 if len(groups) % 2 == 0 else -1
     if is_parity_state(groups):
         return -1
-    if is_two_identical_groups(groups) and groups[0] in (2, 3, 4):
+    if is_two_identical_groups(groups) and groups[0] in (2, 3, 4, 5):
         return 1
-    if len(groups) == 1:
-        group_left = groups[0]
-        if group_left in (2, 3, 4, 5, 6, 7, 8, 9):
-            return -1
-        elif (group_left - 1) % 4 == 0:
-            return 1
+    if len(groups) == 1 and groups[0] in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11):
+        return -1
+    if is_two_close_groups_and_one_single(groups):
+        return 1
     return 0
 
 def assign_score_by_digging(sticks: Sticks, level: int) -> int:
