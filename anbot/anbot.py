@@ -1,9 +1,9 @@
 from typing import List
-from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_two_groups_and_one_single
+from anbot.analyze.analyze import analyze_sticks, is_one_group_left, is_one_huge_group_and_one_other_group, is_only_singles_left, is_two_close_groups_and_one_little_group, is_two_groups_and_one_single
 from anbot.analyze.analyze_parity import is_parity_even, is_parity_state
 from anbot.analyze.analyze_identical import is_almost_two_identical_groups
 from anbot.think.think_singles import add_indexes_of_removed_singles, get_groups_without_pairs_of_singles
-from anbot.think.think import get_biggest_and_smallest_groups, get_huge_group
+from anbot.think.think import get_biggest_and_smallest_groups, get_huge_group, get_the_little_group
 from anbot.think.think_parity import get_group_in_parity_state
 from game.game import is_valid_move, log, remove_sticks
 from game_types.game_types import Groups, Sticks, Move
@@ -66,7 +66,14 @@ def handle_one_group(sticks: Sticks, groups: Groups) -> Move:
 def handle_two_groups_and_one_single(sticks: Sticks, groups: Groups) -> Move:
     big_group, small_group = get_biggest_and_smallest_groups(groups)
     size_of_small_group = small_group[1]
-    return split_group_into_one_single_and_one_group(big_group, size_of_small_group, sticks)
+    move = split_group_into_one_single_and_one_group(big_group, size_of_small_group, sticks)
+    if move:
+        return move
+    return reduce_group(big_group, size_of_small_group + 1, sticks)
+
+def handle_two_close_groups_and_one_little_group(sticks: Sticks, groups: Groups) -> Move:
+    little_group = get_the_little_group(groups)
+    return reduce_group(little_group, 1, sticks)
 
 def handle_huge_group(sticks: Sticks, groups: Groups) -> Move:
     group_position = get_huge_group(groups)
@@ -78,7 +85,7 @@ def print_move(move: Move):
 
 def print_invalid_move(move: Move):
     start, count = move
-    print(f"\nAn-bot tried to do an invalid move : {count} stick{count > 1 and 's' or ''} starting at position {start+1}.")
+    log(f"An-bot tried to do an invalid move : {count} stick{count > 1 and 's' or ''} starting at position {start+1}.", 'warn')
 
 def apply_move(sticks: Sticks, move: Move):
     print_move(move)
@@ -100,32 +107,37 @@ def anbot_move(sticks: Sticks) -> None:
     if is_only_singles_left(groups):
         log('Only singles left')
         move = take_first_single(sticks)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
 
     if is_one_group_left(groups):
         log('One group left')
         move = handle_one_group(sticks, groups)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
 
     if is_parity_state(groups):
         log('In parity state')
         move = handle_parity(sticks, groups)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
 
     if is_almost_two_identical_groups(groups):
         log('Almost two identical groups')
         move = leave_two_identical_groups(groups, sticks)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
 
     if is_two_groups_and_one_single(groups):
         log('Two groups and one single')
         move = handle_two_groups_and_one_single(sticks, groups)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
+    
+    if is_two_close_groups_and_one_little_group(groups):
+        log('Two close groups and one little group')
+        move = handle_two_close_groups_and_one_little_group(sticks, groups)
+        if try_move(sticks, move): return
 
     if is_one_huge_group_and_one_other_group(groups):
         log('One huge group and one other group')
         move = handle_huge_group(sticks, groups)
-    if try_move(sticks, move): return
+        if try_move(sticks, move): return
 
     # Simple AI: random valid move
     log('Random move')

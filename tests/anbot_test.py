@@ -5,7 +5,7 @@ from anbot.think.think import get_start_of_group, get_index_of_first_single
 from anbot.think.think_identical import get_biggest_group_between_two, get_group_different_from_the_others
 from anbot.think.think_parity import get_group_in_parity_state
 from anbot.do.do import leave_one_single_from_group, take_whole_group, take_first_single, leave_two_identical_groups, reduce_group
-from anbot.do.do_split import split_group_into_one_single_and_one_group, split_group_into_two_different_groups, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups
+from anbot.do.do_split import split_group_into_two_different_groups, split_group_into_two_identical_groups, split_group_into_two_singles, split_huge_group_into_two_different_groups
 import pytest
 
 def test_analyze_sticks():

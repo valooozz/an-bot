@@ -35,8 +35,6 @@ def log(message: str, level = 'thinking'):
         CYAN = "\033[36m"
         RED = "\033[31m"
         ORANGE = "\033[38;5;208m"
-        BG_BLACK = "\033[40m"
-        WHITE = "\033[97m"
 
         if level == 'thinking':
             formatted_message = f"{BOLD}{CYAN}[THINKING] {message}{RESET}"

@@ -18,9 +18,13 @@ def take_whole_group(group_position: GroupPosition, sticks: Sticks) -> Move:
 
 def reduce_group(group_position: GroupPosition, new_length: int, sticks: Sticks) -> Move:
     group_index, group_length = group_position
-    if group_length <= new_length:
-        return None
     log(f"Reduce group of {group_length} into group of {new_length}")
+    if group_length <= new_length:
+        log(f"Group length is lower or equal to the new length ({group_length} <= {new_length})", 'warn')
+        return None
+    if group_length - new_length > 3:
+        log(f"Too many sticks to remove ({group_length} -> {new_length})", 'warn')
+        return None
     group_start = get_start_of_group(sticks, group_index)
     return (group_start, group_length - new_length)
 

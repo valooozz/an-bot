@@ -35,3 +35,17 @@ def is_two_groups_and_one_single(groups: Groups) -> bool:
     if len(groups) != 3:
         return False
     return sum(1 for group in groups if group == 1) == 1
+
+def is_two_close_groups_and_one_little_group(groups: Groups) -> bool:
+    if len(groups) != 3:
+        return False
+    if any(group == 1 for group in groups):
+        return False
+    sorted_groups = sorted(groups)
+    for i in range(3):
+        first = i
+        second = (i + 1) % 3
+        third = (i + 2) % 3
+        if sorted_groups[first] in (2, 3, 4) and sorted_groups[third] == sorted_groups[second] + 1 :
+            return True
+    return False

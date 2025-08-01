@@ -1,4 +1,4 @@
-from game.config import INITIAL_POSITION, SANDBOX_ACTIVE
+from game.config import INITIAL_POSITION, NUMBER_OF_STICKS, SANDBOX_ACTIVE
 from game.game import create_sticks_from_groups, display_sticks, is_game_over
 from anbot.anbot import anbot_move  
 from player.player import player_move
@@ -10,7 +10,7 @@ def main() -> None:
         sticks = create_sticks_from_groups(INITIAL_POSITION)
         player_turn = False
     else:
-        sticks: Sticks = [True] * 16
+        sticks: Sticks = [True] * NUMBER_OF_STICKS
         player_turn = True
     while True:
         display_sticks(sticks)

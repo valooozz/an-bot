@@ -15,8 +15,6 @@ def split_group_into_two_singles(group_position: GroupPosition, sticks: Sticks) 
 def split_group_into_one_single_and_one_group(group_position: GroupPosition, size_of_new_group: int, sticks: Sticks) -> Move:
     log(f"Split group into one single and one group of {size_of_new_group} : {group_position}")
     group_index, group_length = group_position
-    if group_length not in (4, 5, 6, 7):
-        raise ValueError("Can only split groups of length 4, 5, 6, or 7 into one single and one group")
     if group_length - size_of_new_group < 2:
         log(f"Tried to split group of {group_length} into a single and a group of {size_of_new_group} : not enough sticks", 'warn')
         return None
