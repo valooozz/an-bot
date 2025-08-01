@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List
-from anbot.analyze.analyze import analyze_sticks, is_only_singles_left, is_two_close_groups_and_one_single
+from anbot.analyze.analyze import analyze_sticks, is_exact_groups, is_only_singles_left, is_one_two_three
 from anbot.analyze.analyze_identical import is_two_identical_groups
 from anbot.analyze.analyze_parity import is_parity_state
 from anbot.think.think_singles import get_groups_without_pairs_of_singles, remove_singles
@@ -48,8 +48,10 @@ def assign_simple_score(groups: Groups) -> int:
         return 1
     if len(groups) == 1 and groups[0] in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11):
         return -1
-    if is_two_close_groups_and_one_single(groups):
+    if is_exact_groups(groups, [1, 2, 3]):
         return 1
+    if is_exact_groups(groups, [2, 3, 4]):
+        return -1
     return 0
 
 def assign_score_by_digging(sticks: Sticks, level: int) -> int:

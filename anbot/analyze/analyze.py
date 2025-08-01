@@ -50,8 +50,5 @@ def is_two_close_groups_and_one_little_group(groups: Groups) -> bool:
             return True
     return False
 
-def is_two_close_groups_and_one_single(groups: Groups) -> bool:
-    if len(groups) != 3:
-        return False
-    sorted_groups = sorted(groups)
-    return sorted_groups[0] == 1 and sorted_groups[1] + 1 == sorted_groups[2]
+def is_exact_groups(groups: Groups, value: Groups) -> bool:
+    return sorted(groups) == value
