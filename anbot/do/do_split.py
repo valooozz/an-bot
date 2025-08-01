@@ -1,4 +1,3 @@
-from ctypes import sizeof
 from anbot.think.think import get_start_of_group
 from game.game import log
 from game_types.game_types import GroupPosition, Move, Sticks

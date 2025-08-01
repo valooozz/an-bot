@@ -5,7 +5,7 @@ from player.player import player_move
 from game_types.game_types import Sticks
 
 def main() -> None:
-    print("\nWelcome to Sixteen Sticks! You are playing against an-bot. Don't take the last stick!")
+    print("\nWelcome to The Sticks Game! You are playing against an-bot. Don't take the last stick!")
     if (SANDBOX_ACTIVE):
         sticks = create_sticks_from_groups(INITIAL_POSITION)
         player_turn = False

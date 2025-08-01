@@ -3,6 +3,11 @@ from anbot.think.think_singles import get_groups_without_pairs_of_singles
 from game_types.game_types import Groups
 
 
+def is_two_identical_groups(groups: Groups) -> bool:
+    if len(groups) != 2:
+        return False
+    return groups[0] == groups[1]
+
 def is_two_identical_groups_and_one_other(groups: Groups) -> bool:
     if len(groups) != 3:
         return False
