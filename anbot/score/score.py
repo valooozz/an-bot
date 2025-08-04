@@ -1,9 +1,10 @@
 import random
+from statistics import mean
 from typing import Dict, List
-from anbot.analyze.analyze import analyze_sticks, is_exact_groups, is_only_singles_left, is_one_two_three
-from anbot.analyze.analyze_identical import is_two_identical_groups
+from anbot.analyze.analyze import analyze_sticks, is_exact_groups, is_only_singles_left
+from anbot.analyze.analyze_identical import is_n_identical_groups
 from anbot.analyze.analyze_parity import is_parity_state
-from anbot.think.think_singles import get_groups_without_pairs_of_singles, remove_singles
+from anbot.think.think_singles import get_groups_without_pairs_of_singles
 from game.config import DIGGING_LEVEL
 from game.game import log
 from game_types.game_types import Groups, Move, Sticks
@@ -44,7 +45,9 @@ def assign_simple_score(groups: Groups) -> int:
         return 1 if len(groups) % 2 == 0 else -1
     if is_parity_state(groups):
         return -1
-    if is_two_identical_groups(groups) and groups[0] in (2, 3, 4, 5):
+    if is_n_identical_groups(groups, 2) and groups[0] in (2, 3, 4, 5):
+        return 1
+    if is_n_identical_groups(groups, 4) and groups[0] in (2, 3):
         return 1
     if len(groups) == 1 and groups[0] in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11):
         return -1
@@ -52,6 +55,8 @@ def assign_simple_score(groups: Groups) -> int:
         return 1
     if is_exact_groups(groups, [2, 3, 4]):
         return -1
+    if is_exact_groups(groups, [2, 2, 3, 3]):
+        return 1
     return 0
 
 def assign_score_by_digging(sticks: Sticks, level: int) -> int:
@@ -60,7 +65,10 @@ def assign_score_by_digging(sticks: Sticks, level: int) -> int:
     possible_moves = get_possible_moves(sticks)
     scores = get_scores(possible_moves, sticks, level + 1)
     mean_score = sum(scores.values()) / len(scores)
-    return mean_score * (-1 if level % 2 == 0 else 1)
+    if level % 2 == 0: # an-bot turn
+        return max(scores.values()) * mean_score * -1
+    else: # player turn
+        return min(scores.values()) * mean_score
 
 def assign_score_to_move(move: Move, sticks: Sticks, level: int) -> int:
     next_position = simulate_remove_sticks(sticks, move)

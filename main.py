@@ -1,4 +1,4 @@
-from game.config import INITIAL_POSITION, NUMBER_OF_STICKS, PLAYER_TURN, SANDBOX_ACTIVE
+from game.config import INITIAL_POSITION, NUMBER_OF_STICKS, PLAYER_ACTIVE, PLAYER_TURN, SANDBOX_ACTIVE
 from game.game import create_sticks_from_groups, display_sticks, is_game_over
 from anbot.anbot import anbot_move  
 from player.player import player_move
@@ -19,7 +19,7 @@ def main() -> None:
             else:
                 print("You took the last stick. You lose!")
             break
-        if player_turn:
+        if player_turn and PLAYER_ACTIVE:
             player_move(sticks)
         else:
             anbot_move(sticks)
