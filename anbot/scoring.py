@@ -1,10 +1,7 @@
 import random
-from statistics import mean
 from typing import Dict, List
-from anbot.analyze.analyze import analyze_sticks, is_exact_groups, is_only_singles_left
-from anbot.analyze.analyze_identical import is_n_identical_groups
-from anbot.analyze.analyze_parity import is_parity_state
-from anbot.think.think_singles import get_groups_without_pairs_of_singles
+from anbot.analyze import analyze_sticks, is_exact_groups, is_n_identical_groups, is_one_group_left, is_only_singles_left, is_parity_state
+from anbot.singles import get_groups_without_pairs_of_singles
 from game.config import DIGGING_LEVEL
 from game.game import log
 from game_types.game_types import Groups, Move, Sticks
@@ -37,19 +34,15 @@ def simulate_remove_sticks(sticks: Sticks, move: Move) -> Sticks:
     return next_position
 
 def assign_simple_score(groups: Groups) -> int:
-    if groups == []:
-        return -1
-    if groups == [1]:
-        return 1
     if is_only_singles_left(groups):
-        return 1 if len(groups) % 2 == 0 else -1
+        return 1 if len(groups) % 2 != 0 else -1
     if is_parity_state(groups):
         return -1
     if is_n_identical_groups(groups, 2) and groups[0] in (2, 3, 4, 5):
         return 1
     if is_n_identical_groups(groups, 4) and groups[0] in (2, 3):
         return 1
-    if len(groups) == 1 and groups[0] in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11):
+    if is_one_group_left(groups) and groups[0] in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11):
         return -1
     if is_exact_groups(groups, [1, 2, 3]):
         return 1
@@ -73,7 +66,7 @@ def assign_score_by_digging(sticks: Sticks, level: int) -> int:
 def assign_score_to_move(move: Move, sticks: Sticks, level: int) -> int:
     next_position = simulate_remove_sticks(sticks, move)
     next_groups = analyze_sticks(next_position)
-    next_groups_without_singles, _ = get_groups_without_pairs_of_singles(next_groups)
+    next_groups_without_singles = get_groups_without_pairs_of_singles(next_groups)
     score = assign_simple_score(next_groups_without_singles)
     if score == 0:
         score = assign_score_by_digging(next_position, level)
