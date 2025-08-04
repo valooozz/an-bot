@@ -1,7 +1,8 @@
 import random
-from typing import Dict, List
+from typing import Dict, List, Tuple, Optional
 from anbot.analyze import analyze_sticks, is_exact_groups, is_n_identical_groups, is_one_group_left, is_only_singles_left, is_parity_state
 from anbot.singles import get_groups_without_pairs_of_singles
+from anbot.cache import get_cached_moves, write_best_moves
 from game.config import DIGGING_LEVEL
 from game.game import log
 from game_types.game_types import Groups, Move, Sticks
@@ -85,7 +86,23 @@ def get_move_with_best_score(scores: Dict[Move, int]) -> Move:
     return random.choice(best_moves)
 
 def get_best_move_by_score(sticks: Sticks) -> Move:
+    # Check cache first
+    cached_moves = get_cached_moves(sticks)
+    if cached_moves:
+        log(f"Using cached moves: {cached_moves}")
+        return random.choice(cached_moves)
+    
+    # Calculate best moves
     possible_moves = get_possible_moves(sticks)
     scores = get_scores(possible_moves, sticks, 1)
     log(f"Scores : {scores}")
-    return get_move_with_best_score(scores)
+    
+    # Get best moves and cache them
+    max_score = max(scores.values())
+    best_moves = [move for move, score in scores.items() if score == max_score]
+    
+    # Cache the best moves
+    write_best_moves(sticks, best_moves)
+    log(f"Cached {len(best_moves)} best moves with score {max_score}")
+    
+    return random.choice(best_moves)
