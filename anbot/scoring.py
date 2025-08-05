@@ -49,6 +49,8 @@ def assign_simple_score(groups: Groups) -> int:
         return 1
     if is_exact_groups(groups, [2, 3, 4]):
         return -1
+    if is_exact_groups(groups, [2, 3, 5]):
+        return 1
     if is_exact_groups(groups, [2, 2, 3, 3]):
         return 1
     return 0
